@@ -1,0 +1,894 @@
+﻿<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>أبو إسلام للجملة - نظام الطلبات الداخلي</title>
+    <!-- Tailwind CSS للتنسيق -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome للأيقونات -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- خط القاهرة -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: #f4f7f6;
+        }
+
+        /* تنسيقات توقيع المصمم Ahmed Younes ورقم الهاتف */
+        .ay-credit {
+            text-align: center;
+            padding: 14px;
+            font-family: Arial, sans-serif;
+            font-size: 13px;
+            color: #777;
+            background-color: #ffffff;
+            border-top: 1px solid #eaeaea;
+            direction: ltr;
+        }
+
+            .ay-credit .ay-phone {
+                display: block;
+                margin-top: 4px;
+                font-size: 12px;
+                color: #555;
+                font-weight: 600;
+            }
+
+                .ay-credit .ay-phone a {
+                    color: #0d6efd;
+                    text-decoration: none;
+                }
+
+                    .ay-credit .ay-phone a:hover {
+                        text-decoration: underline;
+                    }
+
+            .ay-credit button {
+                border: none;
+                background: none;
+                padding: 0;
+                color: #0d6efd;
+                font: inherit;
+                font-weight: 700;
+                cursor: pointer;
+            }
+
+        .ay-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 99999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+            direction: ltr;
+            text-align: left;
+        }
+
+            .ay-modal.ay-open {
+                display: flex;
+            }
+
+        .ay-card {
+            position: relative;
+            width: 100%;
+            max-width: 340px;
+            padding: 30px 24px;
+            border-radius: 22px;
+            background: #fff;
+            color: #222;
+            text-align: center;
+            font-family: Arial, sans-serif;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+        }
+
+        .ay-avatar {
+            width: 72px;
+            height: 72px;
+            margin: 0 auto 14px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #0d6efd, #6610f2);
+            color: white;
+            font-size: 25px;
+            font-weight: 800;
+        }
+
+        .ay-links {
+            display: grid;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+            .ay-links a {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                padding: 12px 15px;
+                border: 1px solid #eee;
+                border-radius: 12px;
+                color: #222;
+                text-decoration: none;
+                font-size: 14px;
+                font-weight: 600;
+                text-align: left;
+            }
+
+        .ay-close {
+            position: absolute;
+            top: 12px;
+            right: 14px;
+            width: 32px;
+            height: 32px;
+            border: none;
+            border-radius: 50%;
+            background: #f1f1f1;
+            color: #333;
+            font-size: 22px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+
+    <!-- الهيدر بتصميم عصري مع اسم أبو إسلام للجملة، العنوان، ورقم الواتساب -->
+    <header class="bg-gradient-to-r from-emerald-800 via-teal-900 to-cyan-900 text-white shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center space-x-3 space-x-reverse text-center md:text-right">
+                <div class="bg-amber-400 p-2.5 rounded-xl text-slate-900 shadow-md">
+                    <i class="fa-solid fa-store text-2xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-black tracking-wide">أبو إسلام للجملة</h1>
+                    <div class="text-xs text-emerald-200 mt-1 flex flex-col md:flex-row items-center gap-2 md:gap-4">
+                        <span class="flex items-center gap-1">
+                            <i class="fa-solid fa-location-dot text-amber-400"></i>
+                            <span>شارع الكورة أمام مسجد عباد الرحمن - متفرع من المعهد الديني، العصافرة قبلي</span>
+                        </span>
+                        <a href="https://wa.me/201287513593" target="_blank" class="bg-emerald-700/80 hover:bg-emerald-700 text-emerald-100 px-2.5 py-1 rounded-lg border border-emerald-600 flex items-center gap-1.5 transition font-semibold">
+                            <i class="fa-brands fa-whatsapp text-amber-400 text-sm"></i>
+                            <span>01287513593</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="flex items-center space-x-3 space-x-reverse">
+                <button onclick="toggleCart()" class="relative bg-white/10 hover:bg-white/20 border border-white/20 px-4 py-2.5 rounded-xl flex items-center space-x-2 space-x-reverse transition backdrop-blur-sm font-semibold">
+                    <i class="fa-solid fa-cart-shopping text-amber-400"></i>
+                    <span>السلة</span>
+                    <span id="cart-count" class="bg-amber-500 text-slate-950 text-xs px-2 py-0.5 rounded-full font-black">0</span>
+                </button>
+                <button onclick="openAdminModal()" class="bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold px-4 py-2.5 rounded-xl flex items-center space-x-2 space-x-reverse transition shadow-md">
+                    <i class="fa-solid fa-lock text-sm"></i>
+                    <span>لوحة التحكم</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- المحتوى الرئيسي -->
+    <main class="container mx-auto px-4 py-8 flex-grow">
+        <div class="text-center mb-8">
+            <h2 class="text-3xl font-black text-slate-900 mb-2">أقسام المحل وعروض الجملة</h2>
+            <p class="text-slate-600 font-medium">اختر القسم المناسب لاستعراض الأصناف وتعبئة سلتك بأفضل الأسعار.</p>
+        </div>
+
+        <!-- شريط الأقسام (أزرار) -->
+        <div id="categories-tabs" class="flex justify-center flex-wrap gap-3 mb-8">
+            <!-- الأقسام تتولد هنا ديناميكياً -->
+        </div>
+
+        <!-- معلومات القسم الحالي وصورته -->
+        <div id="active-category-banner" class="bg-white rounded-3xl shadow-xl p-6 md:p-8 mb-8 flex flex-col md:flex-row items-center gap-6 border border-slate-100 relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-emerald-50 rounded-bl-full -z-0 pointer-events-none"></div>
+            <div id="banner-image-container" class="w-full md:w-1/3 h-52 rounded-2xl overflow-hidden shadow-md bg-slate-100 flex items-center justify-center border-2 border-emerald-50 relative z-10">
+                <!-- الصورة تظهر هنا -->
+            </div>
+            <div class="w-full md:w-2/3 text-center md:text-right relative z-10">
+                <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full mb-3 inline-block">القسم النشط حالياً</span>
+                <h3 id="banner-title" class="text-3xl font-black text-slate-900 mb-2">اختر قسماً</h3>
+                <p class="text-slate-500 font-medium leading-relaxed">استعرض الأصناف المتوفرة داخل هذا القسم واطلب الكمية التي تناسبك (كرتونة، قطعة، أو دستة) بأسعار خاصة للجملة.</p>
+            </div>
+        </div>
+
+        <!-- جدول المنتجات الخاصة بالقسم المختار -->
+        <div class="bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-100">
+            <div class="p-6 bg-slate-900 text-white flex justify-between items-center">
+                <h3 id="table-header-title" class="text-lg font-bold flex items-center">
+                    <i class="fa-solid fa-boxes-stacked text-amber-400 ml-2"></i>
+                    <span>أصناف القسم</span>
+                </h3>
+                <span class="text-xs text-amber-400 font-bold bg-amber-400/10 px-3 py-1 rounded-full border border-amber-400/20">تحديثات فورية</span>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-right border-collapse">
+                    <thead>
+                        <tr class="border-b bg-slate-50 text-slate-600 text-sm">
+                            <th class="p-4 font-bold">الصنف</th>
+                            <th class="p-4 font-bold">طريقة البيع</th>
+                            <th class="p-4 font-bold">السعر</th>
+                            <th class="p-4 text-center font-bold">إجراء</th>
+                        </tr>
+                    </thead>
+                    <tbody id="products-table-body">
+                        <!-- الأصناف تتولد هنا -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- فوتر توقيع المصمم ورقم الهاتف -->
+    <footer class="ay-credit">
+        <div>
+            Design by
+            <button type="button" id="ay-open">
+                Ahmed Younes
+            </button>
+        </div>
+        <div class="ay-phone">
+            <i class="fa-solid fa-phone text-xs mr-1"></i> <a href="tel:01002285611">01002285611</a>
+        </div>
+    </footer>
+
+    <!-- نافذة تفاصيل المصمم -->
+    <div class="ay-modal" id="ay-modal" role="dialog" aria-modal="true" aria-labelledby="ay-title">
+        <div class="ay-card">
+            <button class="ay-close" id="ay-close" type="button" aria-label="Close">&times;</button>
+            <div class="ay-avatar">AY</div>
+            <h3 id="ay-title" style="margin: 0 0 7px; font-size: 23px; font-weight: 700;">Ahmed Younes</h3>
+            <p style="margin: 0 0 22px; color: #777; font-size: 13px;">Let's connect on social media</p>
+            <div class="ay-links">
+                <a href="https://www.linkedin.com/in/ahmed-younes-431376341" target="_blank" rel="noopener noreferrer">
+                    <span style="width: 25px; text-align: center; font-size: 17px;">💼</span> LinkedIn
+                </a>
+                <a href="https://www.facebook.com/share/1bhheM8hL5/" target="_blank" rel="noopener noreferrer">
+                    <span style="width: 25px; text-align: center; font-size: 17px;">📘</span> Facebook
+                </a>
+                <a href="https://www.instagram.com/a7med_younes111?stkn=MWJoYjFoemwxNjlhcQ==" target="_blank" rel="noopener noreferrer">
+                    <span style="width: 25px; text-align: center; font-size: 17px;">📸</span> Instagram
+                </a>
+                <a href="https://wa.me/201101135570" target="_blank" rel="noopener noreferrer">
+                    <span style="width: 25px; text-align: center; font-size: 17px;">💬</span> WhatsApp
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة السلة -->
+    <div id="cart-modal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-50 hidden flex justify-end transition-all">
+        <div class="bg-white w-full max-w-md h-full shadow-2xl flex flex-col p-6 overflow-y-auto">
+            <div class="flex justify-between items-center border-b pb-4 mb-4">
+                <h3 class="text-xl font-black text-slate-900 flex items-center">
+                    <i class="fa-solid fa-cart-shopping text-emerald-600 ml-2"></i>سلة الطلبات
+                </h3>
+                <button onclick="toggleCart()" class="text-slate-400 hover:text-red-500 text-xl font-bold w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center transition"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div id="cart-items" class="flex-grow space-y-4 overflow-y-auto mb-4">
+                <!-- عناصر السلة -->
+            </div>
+            <div class="border-t pt-4">
+                <div class="flex justify-between items-center mb-4 text-lg font-black">
+                    <span class="text-slate-700">الإجمالي:</span>
+                    <span id="cart-total" class="text-emerald-700">0 ج.م</span>
+                </div>
+                <button onclick="openCheckoutModal()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 rounded-2xl transition shadow-lg shadow-emerald-600/30">إتمام وتأكيد الطلب</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة نموذج إتمام الطلب (بيانات العميل) -->
+    <div id="checkout-modal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white p-6 md:p-8 rounded-3xl shadow-2xl w-full max-w-md">
+            <div class="flex justify-between items-center border-b pb-3 mb-4">
+                <h3 class="text-xl font-black text-slate-900">بيانات الشحن والتوصيل</h3>
+                <button onclick="closeCheckoutModal()" class="text-slate-400 hover:text-red-500 text-lg"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form onsubmit="submitOrder(event)" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-1">الاسم الكامل *</label>
+                    <input type="text" id="cust-name" required class="w-full border border-slate-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-slate-50 font-medium" placeholder="مثال: أحمد محمد">
+                </div>
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-1">رقم الهاتف *</label>
+                    <input type="tel" id="cust-phone" required class="w-full border border-slate-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-slate-50 font-medium" placeholder="مثال: 01000000000">
+                </div>
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-1">عنوان التوصيل بالتفصيل *</label>
+                    <textarea id="cust-address" required rows="2" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-slate-50 font-medium" placeholder="المدينة، الشارع، رقم الحارة أو العمارة..."></textarea>
+                </div>
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-1">ملاحظات إضافية (اختياري)</label>
+                    <input type="text" id="cust-notes" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-slate-50 font-medium" placeholder="أي تعليمات خاصة بالتوصيل">
+                </div>
+                <div class="pt-2">
+                    <button type="submit" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3.5 rounded-2xl transition shadow-lg">إرسال الطلب الآن</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- نافذة تسجيل دخول الأدمن -->
+    <div id="admin-login-modal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white p-8 rounded-3xl shadow-2xl w-full max-w-sm">
+            <h3 class="text-xl font-black text-slate-900 mb-4 text-center">دخول لوحة التحكم</h3>
+            <div class="mb-4">
+                <label class="block text-sm font-bold text-slate-700 mb-2">كلمة المرور</label>
+                <input type="password" id="admin-pass" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-slate-50" placeholder="أدخل كلمة المرور">
+            </div>
+            <div class="flex justify-end space-x-2 space-x-reverse">
+                <button onclick="closeAdminModal()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2.5 rounded-xl font-bold">إلغاء</button>
+                <button onclick="verifyAdmin()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-xl font-bold">دخول</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- لوحة تحكم الأدمن -->
+    <div id="admin-dashboard" class="fixed inset-0 bg-slate-100 z-50 hidden overflow-y-auto">
+        <div class="bg-slate-900 text-white p-4 shadow-md flex justify-between items-center sticky top-0 z-10">
+            <h2 class="text-xl font-black flex items-center">
+                <i class="fa-solid fa-gauge text-amber-400 ml-2"></i>لوحة تحكم الأدمن - أبو إسلام للجملة
+            </h2>
+            <button onclick="closeAdminDashboard()" class="bg-red-600 hover:bg-red-500 px-4 py-2 rounded-xl font-bold text-sm transition">إغلاق لوحة التحكم</button>
+        </div>
+        <div class="container mx-auto px-4 py-8 space-y-8">
+
+            <!-- طلبات العملاء الواردة -->
+            <div class="bg-white p-6 md:p-8 rounded-3xl shadow-xl border border-slate-200">
+                <h3 class="text-lg font-black text-slate-900 mb-4 flex items-center">
+                    <i class="fa-solid fa-clipboard-list text-amber-500 ml-2"></i>
+                    <span>طلبات العملاء الواردة</span>
+                    <span id="orders-badge" class="mr-3 bg-red-500 text-white text-xs px-2.5 py-1 rounded-full font-bold">0</span>
+                </h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-right border-collapse text-sm">
+                        <thead>
+                            <tr class="border-b bg-slate-50 text-slate-800">
+                                <th class="p-3 font-bold">رقم الطلب والتاريخ</th>
+                                <th class="p-3 font-bold">بيانات العميل</th>
+                                <th class="p-3 font-bold">الأصناف المطلوبة</th>
+                                <th class="p-3 font-bold">الإجمالي</th>
+                                <th class="p-3 text-center font-bold">إجراء</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-orders-body">
+                            <!-- الطلبات -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- إضافة قسم جديد مع صورة -->
+            <div class="bg-white p-6 md:p-8 rounded-3xl shadow-xl border border-slate-200">
+                <h3 class="text-lg font-black text-slate-900 mb-4">إضافة قسم جديد مع رفع صورته من الجهاز</h3>
+                <form onsubmit="addCategory(event)" class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-1">اسم القسم</label>
+                        <input type="text" id="cat-name" required class="w-full border border-slate-200 rounded-xl px-4 py-2.5 bg-slate-50" placeholder="مثال: شيبسي وسناكس">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-1">صورة القسم من الجهاز</label>
+                        <input type="file" id="cat-image" accept="image/*" required class="w-full border border-slate-200 rounded-xl px-3 py-2 bg-slate-50 text-sm">
+                    </div>
+                    <div>
+                        <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl transition shadow-md">إضافة القسم</button>
+                    </div>
+                </form>
+
+                <h4 class="font-bold text-sm text-slate-700 mt-8 mb-3">الأقسام الحالية وإمكانية الحذف:</h4>
+                <div id="admin-categories-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                    <!-- الأقسام -->
+                </div>
+            </div>
+
+            <!-- إضافة صنف داخل قسم (مع صورة المنتج) -->
+            <div class="bg-white p-6 md:p-8 rounded-3xl shadow-xl border border-slate-200">
+                <h3 class="text-lg font-black text-slate-900 mb-4">إضافة صنف / منتج جديد مع صورته</h3>
+                <form id="add-product-form" onsubmit="addProduct(event)" class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-1">اختر القسم</label>
+                        <select id="p-category" required class="w-full border border-slate-200 rounded-xl px-4 py-2.5 bg-slate-50">
+                            <!-- الأقسام -->
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-1">اسم الصنف</label>
+                        <input type="text" id="p-name" required class="w-full border border-slate-200 rounded-xl px-4 py-2.5 bg-slate-50" placeholder="مثال: شيبسي شطة وليمون">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-1">صورة الصنف من الجهاز *</label>
+                        <input type="file" id="p-image" accept="image/*" required class="w-full border border-slate-200 rounded-xl px-3 py-2 bg-slate-50 text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-1">طريقة البيع</label>
+                        <select id="p-type" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 bg-slate-50">
+                            <option value="كرتونة">كرتونة (جملة)</option>
+                            <option value="قطعة">قطعة منفردة</option>
+                            <option value="دستة">دستة</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-1">السعر (بالجنيه)</label>
+                        <input type="number" id="p-price" required class="w-full border border-slate-200 rounded-xl px-4 py-2.5 bg-slate-50" placeholder="مثال: 250">
+                    </div>
+                    <div>
+                        <button type="submit" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 rounded-xl transition shadow-md">حفظ وإضافة الصنف</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- قائمة الأصناف المسجلة -->
+            <div class="bg-white p-6 md:p-8 rounded-3xl shadow-xl border border-slate-200">
+                <h3 class="text-lg font-black text-slate-900 mb-4">جميع الأصناف الحالية</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-right border-collapse">
+                        <thead>
+                            <tr class="border-b bg-slate-50 text-slate-700 text-sm">
+                                <th class="p-3 font-bold">صورة الصنف</th>
+                                <th class="p-3 font-bold">اسم الصنف</th>
+                                <th class="p-3 font-bold">القسم</th>
+                                <th class="p-3 font-bold">طريقة البيع</th>
+                                <th class="p-3 font-bold">السعر</th>
+                                <th class="p-3 font-bold">إجراء</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-table-body">
+                            <!-- الأصناف -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- كود الجافاسكريبت -->
+    <script>
+        let categories = JSON.parse(localStorage.getItem('wholesale_categories_v6')) || [
+        { name: 'شيبسي وسناكس', image: 'https://images.unsplash.com/photo-1566478989037-eec170784d0b?auto=format&fit=crop&w=600&q=80' },
+        { name: 'بسكوت وحلويات', image: 'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?auto=format&fit=crop&w=600&q=80' },
+        { name: 'مشروبات باردة', image: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=600&q=80' }
+        ];
+
+        let products = JSON.parse(localStorage.getItem('wholesale_products_v6')) || [
+        { id: '1', category: 'شيبسي وسناكس', name: 'كرتونة شيبسي مشكل', type: 'كرتونة', price: 1500, image: 'https://images.unsplash.com/photo-1566478989037-eec170784d0b?auto=format&fit=crop&w=200&q=80' },
+        { id: '2', category: 'شيبسي وسناكس', name: 'شيبسي كيس مفرد', type: 'قطعة', price: 6, image: 'https://images.unsplash.com/photo-1566478989037-eec170784d0b?auto=format&fit=crop&w=200&q=80' },
+        { id: '3', category: 'بسكوت وحلويات', name: 'دستة بسكوت أوريو', type: 'دستة', price: 120, image: 'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?auto=format&fit=crop&w=200&q=80' }
+        ];
+
+        let orders = JSON.parse(localStorage.getItem('wholesale_orders_v6')) || [];
+
+        let cart = [];
+        let activeCategory = categories.length > 0 ? categories[0].name : '';
+
+        function saveData() {
+        localStorage.setItem('wholesale_categories_v6', JSON.stringify(categories));
+        localStorage.setItem('wholesale_products_v6', JSON.stringify(products));
+        localStorage.setItem('wholesale_orders_v6', JSON.stringify(orders));
+        }
+
+        function renderCategories() {
+        const tabsContainer = document.getElementById('categories-tabs');
+        tabsContainer.innerHTML = '';
+
+        if(!categories.some(c => c.name === activeCategory) && categories.length > 0) {
+        activeCategory = categories[0].name;
+        }
+
+        categories.forEach(cat => {
+        const isActive = cat.name === activeCategory;
+        tabsContainer.innerHTML += `
+        <button onclick="changeCategory('${cat.name}')" class="px-6 py-3 rounded-2xl font-bold transition flex items-center space-x-2 space-x-reverse shadow-sm ${isActive ? 'bg-emerald-700 text-white shadow-lg shadow-emerald-700/25 scale-105' : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50'}">
+        <span>${cat.name}</span>
+        </button>
+        `;
+        });
+
+        const currentCatObj = categories.find(c => c.name === activeCategory);
+        const bannerImgContainer = document.getElementById('banner-image-container');
+        const bannerTitle = document.getElementById('banner-title');
+        const tableTitle = document.getElementById('table-header-title');
+
+        if(currentCatObj) {
+        bannerTitle.innerText = currentCatObj.name;
+        tableTitle.innerHTML = `<i class="fa-solid fa-boxes-stacked text-amber-400 ml-2"></i><span>أصناف قسم: ${currentCatObj.name}</span>`;
+        bannerImgContainer.innerHTML = `<img src="${currentCatObj.image}" alt="${currentCatObj.name}" class="w-full h-full object-cover">`;
+        } else {
+        bannerTitle.innerText = "لا توجد أقسام";
+        tableTitle.innerHTML = `<i class="fa-solid fa-boxes-stacked text-amber-400 ml-2"></i><span>أصناف القسم</span>`;
+        bannerImgContainer.innerHTML = `<span class="text-slate-400 text-sm">بدون صورة</span>`;
+        }
+
+        const select = document.getElementById('p-category');
+        if(select) {
+        select.innerHTML = '';
+        categories.forEach(cat => {
+        select.innerHTML += `<option value="${cat.name}">${cat.name}</option>`;
+        });
+        }
+
+        const adminCatList = document.getElementById('admin-categories-list');
+        if(adminCatList) {
+        adminCatList.innerHTML = '';
+        categories.forEach(cat => {
+        adminCatList.innerHTML += `
+        <div class="flex items-center justify-between bg-slate-50 border border-slate-200 p-3.5 rounded-2xl shadow-sm">
+        <div class="flex items-center space-x-3 space-x-reverse">
+        <img src="${cat.image}" class="w-12 h-12 object-cover rounded-xl shadow-sm border">
+        <span class="font-bold text-sm text-slate-900">${cat.name}</span>
+        </div>
+        <button onclick="deleteCategory('${cat.name}')" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded-xl text-xs font-bold transition">
+        <i class="fa-solid fa-trash ml-1"></i>حذف
+        </button>
+        </div>
+        `;
+        });
+        }
+        }
+
+        function changeCategory(catName) {
+        activeCategory = catName;
+        renderCategories();
+        renderProducts();
+        }
+
+        function renderProducts() {
+        const tbody = document.getElementById('products-table-body');
+        tbody.innerHTML = '';
+
+        const filtered = products.filter(p => p.category === activeCategory);
+
+        if(filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="4" class="text-center py-10 text-slate-400 font-semibold">لا توجد أصناف مضافة في هذا القسم حتى الآن.</td></tr>`;
+        return;
+        }
+
+        filtered.forEach(p => {
+        tbody.innerHTML += `
+        <tr class="border-b hover:bg-slate-50/80 transition">
+        <td class="p-4 flex items-center space-x-3 space-x-reverse">
+        <img src="${p.image}" alt="${p.name}" class="w-14 h-14 object-cover rounded-2xl shadow-sm border border-slate-200">
+        <span class="font-black text-slate-900">${p.name}</span>
+        </td>
+        <td class="p-4"><span class="bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full text-xs font-bold border border-emerald-100">${p.type}</span></td>
+        <td class="p-4 font-black text-emerald-600 text-lg">${p.price} ج.م</td>
+        <td class="p-4 text-center">
+        <button onclick="addToCart('${p.id}')" class="bg-slate-900 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-xl font-bold text-sm transition shadow-md flex items-center justify-center mx-auto space-x-2 space-x-reverse">
+        <i class="fa-solid fa-cart-plus text-amber-400"></i>
+        <span>إضافة للسلة</span>
+        </button>
+        </td>
+        </tr>
+        `;
+        });
+        }
+
+        function addToCart(id) {
+        const product = products.find(p => p.id === id);
+        const existing = cart.find(item => item.id === id);
+        if (existing) {
+        existing.qty++;
+        } else {
+        cart.push({ ...product, qty: 1 });
+        }
+        updateCartUI();
+        }
+
+        function updateCartUI() {
+        document.getElementById('cart-count').innerText = cart.reduce((sum, item) => sum + item.qty, 0);
+        const container = document.getElementById('cart-items');
+        container.innerHTML = '';
+        let total = 0;
+
+        if(cart.length === 0) {
+        container.innerHTML = `<div class="text-center text-slate-400 py-12 font-medium">السلة فارغة حالياً</div>`;
+        }
+
+        cart.forEach(item => {
+        total += item.price * item.qty;
+        container.innerHTML += `
+        <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+        <div class="flex items-center space-x-3 space-x-reverse">
+        <img src="${item.image}" class="w-12 h-12 object-cover rounded-xl border border-slate-200">
+        <div>
+        <h4 class="font-bold text-sm text-slate-900">${item.name}</h4>
+        <p class="text-slate-500 text-xs font-medium">${item.price} ج.م (${item.type}) × ${item.qty}</p>
+        </div>
+        </div>
+        <div class="flex items-center space-x-2 space-x-reverse">
+        <button onclick="changeQty('${item.id}', 1)" class="bg-slate-100 hover:bg-slate-200 w-7 h-7 rounded-lg font-bold flex items-center justify-center text-slate-700">+</button>
+        <span class="text-sm font-black w-6 text-center text-slate-900">${item.qty}</span>
+        <button onclick="changeQty('${item.id}', -1)" class="bg-slate-100 hover:bg-slate-200 w-7 h-7 rounded-lg font-bold flex items-center justify-center text-slate-700">-</button>
+        </div>
+        </div>
+        `;
+        });
+        document.getElementById('cart-total').innerText = total + ' ج.م';
+        }
+
+        function changeQty(id, delta) {
+        const item = cart.find(i => i.id === id);
+        if (item) {
+        item.qty += delta;
+        if (item.qty <= 0) {
+        cart = cart.filter(i => i.id !== id);
+        }
+        updateCartUI();
+        }
+        }
+
+        function toggleCart() {
+        document.getElementById('cart-modal').classList.toggle('hidden');
+        }
+
+        function openCheckoutModal() {
+        if (cart.length === 0) {
+        alert('السلة فارغة!');
+        return;
+        }
+        toggleCart();
+        document.getElementById('checkout-modal').classList.remove('hidden');
+        }
+
+        function closeCheckoutModal() {
+        document.getElementById('checkout-modal').classList.add('hidden');
+        }
+
+        function submitOrder(e) {
+        e.preventDefault();
+        const name = document.getElementById('cust-name').value.trim();
+        const phone = document.getElementById('cust-phone').value.trim();
+        const address = document.getElementById('cust-address').value.trim();
+        const notes = document.getElementById('cust-notes').value.trim();
+
+        let total = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
+
+        const newOrder = {
+        id: 'ORD-' + Math.floor(1000 + Math.random() * 9000),
+        date: new Date().toLocaleString('ar-EG'),
+        customer: { name, phone, address, notes },
+        items: [...cart],
+        total: total
+        };
+
+        orders.unshift(newOrder);
+        saveData();
+
+        cart = [];
+        updateCartUI();
+        document.getElementById('cust-name').value = '';
+        document.getElementById('cust-phone').value = '';
+        document.getElementById('cust-address').value = '';
+        document.getElementById('cust-notes').value = '';
+
+        closeCheckoutModal();
+        alert('تم إرسال طلبك بنجاح! سيتم التواصل معك قريباً لتأكيد التوصيل.');
+        }
+
+        function openAdminModal() { document.getElementById('admin-login-modal').classList.remove('hidden'); }
+        function closeAdminModal() { document.getElementById('admin-login-modal').classList.add('hidden'); }
+
+        function verifyAdmin() {
+        const pass = document.getElementById('admin-pass').value;
+        if (pass === '1234') {
+        closeAdminModal();
+        document.getElementById('admin-pass').value = '';
+        document.getElementById('admin-dashboard').classList.remove('hidden');
+        renderCategories();
+        renderAdminTable();
+        renderAdminOrders();
+        } else {
+        alert('كلمة المرور غير صحيحة! الباسورد الافتراضي هو 1234');
+        }
+        }
+
+        function closeAdminDashboard() {
+        document.getElementById('admin-dashboard').classList.add('hidden');
+        renderCategories();
+        renderProducts();
+        }
+
+        function renderAdminOrders() {
+        const tbody = document.getElementById('admin-orders-body');
+        const badge = document.getElementById('orders-badge');
+        badge.innerText = orders.length;
+        tbody.innerHTML = '';
+
+        if(orders.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" class="text-center py-6 text-slate-400 font-medium">لا توجد طلبات جديدة حتى الآن.</td></tr>`;
+        return;
+        }
+
+        orders.forEach(o => {
+        let itemsList = o.items.map(i => `• ${i.name} (${i.type}) × ${i.qty}`).join('<br>');
+        tbody.innerHTML += `
+        <tr class="border-b hover:bg-slate-50">
+        <td class="p-3">
+        <span class="font-black text-emerald-700">${o.id}</span><br>
+        <span class="text-xs text-slate-500 font-medium">${o.date}</span>
+        </td>
+        <td class="p-3">
+        <span class="font-bold text-slate-900">${o.customer.name}</span><br>
+        <span class="text-xs text-slate-600 font-medium"><i class="fa-solid fa-phone ml-1"></i>${o.customer.phone}</span><br>
+        <span class="text-xs text-slate-500 font-medium"><i class="fa-solid fa-location-dot ml-1"></i>${o.customer.address}</span>
+        ${o.customer.notes ? `<br><span class="text-xs text-amber-600 font-bold">ملاحظات: ${o.customer.notes}</span>` : ''}
+        </td>
+        <td class="p-3 text-xs leading-relaxed text-slate-700 font-medium">${itemsList}</td>
+        <td class="p-3 font-black text-emerald-600">${o.total} ج.م</td>
+        <td class="p-3 text-center">
+        <button onclick="deleteOrder('${o.id}')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-xl text-xs font-bold transition">
+        <i class="fa-solid fa-check ml-1"></i>تم وحذف
+        </button>
+        </td>
+        </tr>
+        `;
+        });
+        }
+
+        function deleteOrder(id) {
+        if(confirm('هل تم تسليم الطلب وتريد حذفه من قائمة الطلبات الواردة؟')) {
+        orders = orders.filter(o => o.id !== id);
+        saveData();
+        renderAdminOrders();
+        }
+        }
+
+        function addCategory(e) {
+        e.preventDefault();
+        const name = document.getElementById('cat-name').value.trim();
+        const imageFile = document.getElementById('cat-image').files[0];
+
+        if(categories.some(c => c.name === name)) {
+        alert('هذا القسم موجود بالفعل.');
+        return;
+        }
+
+        if (imageFile) {
+        const reader = new FileReader();
+        reader.onload = function(uploadEvent) {
+        categories.push({
+        name: name,
+        image: uploadEvent.target.result
+        });
+        saveData();
+        renderCategories();
+        renderAdminTable();
+        document.getElementById('cat-name').value = '';
+        document.getElementById('cat-image').value = '';
+        alert('تمت إضافة القسم وصورته بنجاح!');
+        };
+        reader.readAsDataURL(imageFile);
+        }
+        }
+
+        function deleteCategory(catName) {
+        if (categories.length <= 1) {
+        alert('لا يمكنك حذف كل الأقسام، يجب أن يتبقى قسم واحد على الأقل.');
+        return;
+        }
+        if (confirm(`هل أنت متأكد من حذف قسم "${catName}" وكل الأصناف الموجودة بداخله؟`)) {
+        categories = categories.filter(c => c.name !== catName);
+        products = products.filter(p => p.category !== catName);
+        saveData();
+        renderCategories();
+        renderProducts();
+        renderAdminTable();
+        alert('تم الحذف بنجاح.');
+        }
+        }
+
+        function addProduct(e) {
+        e.preventDefault();
+        const category = document.getElementById('p-category').value;
+        const name = document.getElementById('p-name').value.trim();
+        const type = document.getElementById('p-type').value;
+        const price = parseFloat(document.getElementById('p-price').value);
+        const imageFile = document.getElementById('p-image').files[0];
+
+        if (!imageFile) {
+        alert('الرجاء اختيار صورة للصنف.');
+        return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function(uploadEvent) {
+        const newProduct = {
+        id: 'p_' + Date.now(),
+        category,
+        name,
+        type,
+        price,
+        image: uploadEvent.target.result
+        };
+
+        products.push(newProduct);
+        saveData();
+        renderProducts();
+        renderAdminTable();
+        document.getElementById('p-name').value = '';
+        document.getElementById('p-price').value = '';
+        document.getElementById('p-image').value = '';
+        alert('تمت إضافة الصنف وصورته بنجاح!');
+        };
+        reader.readAsDataURL(imageFile);
+        }
+
+        function deleteProduct(id) {
+        if (confirm('هل أنت متأكد من حذف هذا الصنف؟')) {
+        products = products.filter(p => p.id !== id);
+        saveData();
+        renderProducts();
+        renderAdminTable();
+        }
+        }
+
+        function renderAdminTable() {
+        const tbody = document.getElementById('admin-table-body');
+        tbody.innerHTML = '';
+        if(products.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-slate-400 font-medium">لا توجد أصناف مضافة بعد.</td></tr>`;
+        return;
+        }
+        products.forEach(p => {
+        tbody.innerHTML += `
+        <tr class="border-b hover:bg-slate-50">
+        <td class="p-3">
+        <img src="${p.image}" class="w-12 h-12 object-cover rounded-xl border border-slate-200 shadow-sm">
+        </td>
+        <td class="p-3 font-bold text-slate-900">${p.name}</td>
+        <td class="p-3 text-sm text-emerald-700 font-bold">${p.category}</td>
+        <td class="p-3"><span class="bg-slate-100 px-2.5 py-1 rounded-lg text-xs font-bold text-slate-700">${p.type}</span></td>
+        <td class="p-3 font-black text-slate-900">${p.price} ج.م</td>
+        <td class="p-3">
+        <button onclick="deleteProduct('${p.id}')" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded-xl text-xs font-bold transition">حذف</button>
+        </td>
+        </tr>
+        `;
+        });
+        }
+
+        // نافذة المصمم Ahmed Younes
+        (() => {
+        const modal = document.getElementById("ay-modal");
+        const openBtn = document.getElementById("ay-open");
+        const closeBtn = document.getElementById("ay-close");
+
+        if (!modal || !openBtn || !closeBtn) return;
+
+        function openModal() {
+        modal.classList.add("ay-open");
+        closeBtn.focus();
+        }
+
+        function closeModal() {
+        modal.classList.remove("ay-open");
+        openBtn.focus();
+        }
+
+        openBtn.addEventListener("click", openModal);
+        closeBtn.addEventListener("click", closeModal);
+
+        modal.addEventListener("click", (event) => {
+        if (event.target === modal) closeModal();
+        });
+
+        document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && modal.classList.contains("ay-open")) {
+        closeModal();
+        }
+        });
+        })();
+
+        // تشغيل أولي
+        renderCategories();
+        renderProducts();
+        updateCartUI();
+    </script>
+</body>
+</html>
