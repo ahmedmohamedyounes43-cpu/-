@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -11,10 +11,7 @@
     <!-- خط القاهرة -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Cairo', sans-serif;
-            background-color: #f4f7f6;
-        }
+        body { font-family: 'Cairo', sans-serif; background-color: #f4f7f6; }
 
         /* تنسيقات توقيع المصمم Ahmed Younes ورقم الهاتف */
         .ay-credit {
@@ -28,32 +25,32 @@
             direction: ltr;
         }
 
-            .ay-credit .ay-phone {
-                display: block;
-                margin-top: 4px;
-                font-size: 12px;
-                color: #555;
-                font-weight: 600;
-            }
+        .ay-credit .ay-phone {
+            display: block;
+            margin-top: 4px;
+            font-size: 12px;
+            color: #555;
+            font-weight: 600;
+        }
 
-                .ay-credit .ay-phone a {
-                    color: #0d6efd;
-                    text-decoration: none;
-                }
+        .ay-credit .ay-phone a {
+            color: #0d6efd;
+            text-decoration: none;
+        }
 
-                    .ay-credit .ay-phone a:hover {
-                        text-decoration: underline;
-                    }
+        .ay-credit .ay-phone a:hover {
+            text-decoration: underline;
+        }
 
-            .ay-credit button {
-                border: none;
-                background: none;
-                padding: 0;
-                color: #0d6efd;
-                font: inherit;
-                font-weight: 700;
-                cursor: pointer;
-            }
+        .ay-credit button {
+            border: none;
+            background: none;
+            padding: 0;
+            color: #0d6efd;
+            font: inherit;
+            font-weight: 700;
+            cursor: pointer;
+        }
 
         .ay-modal {
             position: fixed;
@@ -69,9 +66,9 @@
             text-align: left;
         }
 
-            .ay-modal.ay-open {
-                display: flex;
-            }
+        .ay-modal.ay-open {
+            display: flex;
+        }
 
         .ay-card {
             position: relative;
@@ -106,19 +103,19 @@
             margin-top: 15px;
         }
 
-            .ay-links a {
-                display: flex;
-                align-items: center;
-                gap: 12px;
-                padding: 12px 15px;
-                border: 1px solid #eee;
-                border-radius: 12px;
-                color: #222;
-                text-decoration: none;
-                font-size: 14px;
-                font-weight: 600;
-                text-align: left;
-            }
+        .ay-links a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 15px;
+            border: 1px solid #eee;
+            border-radius: 12px;
+            color: #222;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            text-align: left;
+        }
 
         .ay-close {
             position: absolute;
@@ -137,7 +134,7 @@
 </head>
 <body class="flex flex-col min-h-screen">
 
-    <!-- الهيدر بتصميم عصري مع اسم أبو إسلام للجملة، العنوان، ورقم الواتساب -->
+    <!-- الهيدر -->
     <header class="bg-gradient-to-r from-emerald-800 via-teal-900 to-cyan-900 text-white shadow-lg sticky top-0 z-50">
         <div class="container mx-auto px-4 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
             <div class="flex items-center space-x-3 space-x-reverse text-center md:text-right">
@@ -181,7 +178,7 @@
 
         <!-- شريط الأقسام (أزرار) -->
         <div id="categories-tabs" class="flex justify-center flex-wrap gap-3 mb-8">
-            <!-- الأقسام تتولد هنا ديناميكياً -->
+            <!-- الأقسام تتولد هنا -->
         </div>
 
         <!-- معلومات القسم الحالي وصورته -->
@@ -227,7 +224,7 @@
     <!-- فوتر توقيع المصمم ورقم الهاتف -->
     <footer class="ay-credit">
         <div>
-            Design by
+            Design by 
             <button type="button" id="ay-open">
                 Ahmed Younes
             </button>
@@ -338,7 +335,7 @@
             <button onclick="closeAdminDashboard()" class="bg-red-600 hover:bg-red-500 px-4 py-2 rounded-xl font-bold text-sm transition">إغلاق لوحة التحكم</button>
         </div>
         <div class="container mx-auto px-4 py-8 space-y-8">
-
+            
             <!-- طلبات العملاء الواردة -->
             <div class="bg-white p-6 md:p-8 rounded-3xl shadow-xl border border-slate-200">
                 <h3 class="text-lg font-black text-slate-900 mb-4 flex items-center">
@@ -450,445 +447,218 @@
 
     <!-- كود الجافاسكريبت -->
     <script>
-        let categories = JSON.parse(localStorage.getItem('wholesale_categories_v6')) || [
-        { name: 'شيبسي وسناكس', image: 'https://images.unsplash.com/photo-1566478989037-eec170784d0b?auto=format&fit=crop&w=600&q=80' },
-        { name: 'بسكوت وحلويات', image: 'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?auto=format&fit=crop&w=600&q=80' },
-        { name: 'مشروبات باردة', image: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=600&q=80' }
+        let categories = JSON.parse(localStorage.getItem('wholesale_categories_v7')) || [
+            { name: 'شيبسي وسناكس', image: 'https://images.unsplash.com/photo-1566478989037-eec170784d0b?auto=format&fit=crop&w=600&q=80' },
+            { name: 'بسكوت وحلويات', image: 'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?auto=format&fit=crop&w=600&q=80' },
+            { name: 'مشروبات باردة', image: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=600&q=80' }
         ];
 
-        let products = JSON.parse(localStorage.getItem('wholesale_products_v6')) || [
-        { id: '1', category: 'شيبسي وسناكس', name: 'كرتونة شيبسي مشكل', type: 'كرتونة', price: 1500, image: 'https://images.unsplash.com/photo-1566478989037-eec170784d0b?auto=format&fit=crop&w=200&q=80' },
-        { id: '2', category: 'شيبسي وسناكس', name: 'شيبسي كيس مفرد', type: 'قطعة', price: 6, image: 'https://images.unsplash.com/photo-1566478989037-eec170784d0b?auto=format&fit=crop&w=200&q=80' },
-        { id: '3', category: 'بسكوت وحلويات', name: 'دستة بسكوت أوريو', type: 'دستة', price: 120, image: 'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?auto=format&fit=crop&w=200&q=80' }
+        let products = JSON.parse(localStorage.getItem('wholesale_products_v7')) || [
+            { id: '1', category: 'شيبسي وسناكس', name: 'كرتونة شيبسي مشكل', type: 'كرتونة', price: 1500, image: 'https://images.unsplash.com/photo-1566478989037-eec170784d0b?auto=format&fit=crop&w=200&q=80' },
+            { id: '2', category: 'شيبسي وسناكس', name: 'شيبسي كيس مفرد', type: 'قطعة', price: 6, image: 'https://images.unsplash.com/photo-1566478989037-eec170784d0b?auto=format&fit=crop&w=200&q=80' },
+            { id: '3', category: 'بسكوت وحلويات', name: 'دستة بسكوت أوريو', type: 'دستة', price: 120, image: 'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?auto=format&fit=crop&w=200&q=80' }
         ];
 
-        let orders = JSON.parse(localStorage.getItem('wholesale_orders_v6')) || [];
+        let orders = JSON.parse(localStorage.getItem('wholesale_orders_v7')) || [];
 
         let cart = [];
         let activeCategory = categories.length > 0 ? categories[0].name : '';
 
         function saveData() {
-        localStorage.setItem('wholesale_categories_v6', JSON.stringify(categories));
-        localStorage.setItem('wholesale_products_v6', JSON.stringify(products));
-        localStorage.setItem('wholesale_orders_v6', JSON.stringify(orders));
+            localStorage.setItem('wholesale_categories_v7', JSON.stringify(categories));
+            localStorage.setItem('wholesale_products_v7', JSON.stringify(products));
+            localStorage.setItem('wholesale_orders_v7', JSON.stringify(orders));
         }
 
         function renderCategories() {
-        const tabsContainer = document.getElementById('categories-tabs');
-        tabsContainer.innerHTML = '';
+            const tabsContainer = document.getElementById('categories-tabs');
+            if (!tabsContainer) return;
+            tabsContainer.innerHTML = '';
+            
+            if(!categories.some(c => c.name === activeCategory) && categories.length > 0) {
+                activeCategory = categories[0].name;
+            }
 
-        if(!categories.some(c => c.name === activeCategory) && categories.length > 0) {
-        activeCategory = categories[0].name;
-        }
+            categories.forEach(cat => {
+                const isActive = cat.name === activeCategory;
+                tabsContainer.innerHTML += `
+                    <button onclick="changeCategory('${cat.name}')" class="px-6 py-3 rounded-2xl font-bold transition flex items-center space-x-2 space-x-reverse shadow-sm ${isActive ? 'bg-emerald-700 text-white shadow-lg shadow-emerald-700/25 scale-105' : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50'}">
+                        <span>${cat.name}</span>
+                    </button>
+                `;
+            });
 
-        categories.forEach(cat => {
-        const isActive = cat.name === activeCategory;
-        tabsContainer.innerHTML += `
-        <button onclick="changeCategory('${cat.name}')" class="px-6 py-3 rounded-2xl font-bold transition flex items-center space-x-2 space-x-reverse shadow-sm ${isActive ? 'bg-emerald-700 text-white shadow-lg shadow-emerald-700/25 scale-105' : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50'}">
-        <span>${cat.name}</span>
-        </button>
-        `;
-        });
+            const currentCatObj = categories.find(c => c.name === activeCategory);
+            const bannerImgContainer = document.getElementById('banner-image-container');
+            const bannerTitle = document.getElementById('banner-title');
+            const tableTitle = document.getElementById('table-header-title');
 
-        const currentCatObj = categories.find(c => c.name === activeCategory);
-        const bannerImgContainer = document.getElementById('banner-image-container');
-        const bannerTitle = document.getElementById('banner-title');
-        const tableTitle = document.getElementById('table-header-title');
+            if(currentCatObj && bannerImgContainer && bannerTitle && tableTitle) {
+                bannerTitle.innerText = currentCatObj.name;
+                tableTitle.innerHTML = `<i class="fa-solid fa-boxes-stacked text-amber-400 ml-2"></i><span>أصناف قسم: ${currentCatObj.name}</span>`;
+                bannerImgContainer.innerHTML = `<img src="${currentCatObj.image}" alt="${currentCatObj.name}" class="w-full h-full object-cover">`;
+            }
 
-        if(currentCatObj) {
-        bannerTitle.innerText = currentCatObj.name;
-        tableTitle.innerHTML = `<i class="fa-solid fa-boxes-stacked text-amber-400 ml-2"></i><span>أصناف قسم: ${currentCatObj.name}</span>`;
-        bannerImgContainer.innerHTML = `<img src="${currentCatObj.image}" alt="${currentCatObj.name}" class="w-full h-full object-cover">`;
-        } else {
-        bannerTitle.innerText = "لا توجد أقسام";
-        tableTitle.innerHTML = `<i class="fa-solid fa-boxes-stacked text-amber-400 ml-2"></i><span>أصناف القسم</span>`;
-        bannerImgContainer.innerHTML = `<span class="text-slate-400 text-sm">بدون صورة</span>`;
-        }
+            const select = document.getElementById('p-category');
+            if(select) {
+                select.innerHTML = '';
+                categories.forEach(cat => {
+                    select.innerHTML += `<option value="${cat.name}">${cat.name}</option>`;
+                });
+            }
 
-        const select = document.getElementById('p-category');
-        if(select) {
-        select.innerHTML = '';
-        categories.forEach(cat => {
-        select.innerHTML += `<option value="${cat.name}">${cat.name}</option>`;
-        });
-        }
-
-        const adminCatList = document.getElementById('admin-categories-list');
-        if(adminCatList) {
-        adminCatList.innerHTML = '';
-        categories.forEach(cat => {
-        adminCatList.innerHTML += `
-        <div class="flex items-center justify-between bg-slate-50 border border-slate-200 p-3.5 rounded-2xl shadow-sm">
-        <div class="flex items-center space-x-3 space-x-reverse">
-        <img src="${cat.image}" class="w-12 h-12 object-cover rounded-xl shadow-sm border">
-        <span class="font-bold text-sm text-slate-900">${cat.name}</span>
-        </div>
-        <button onclick="deleteCategory('${cat.name}')" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded-xl text-xs font-bold transition">
-        <i class="fa-solid fa-trash ml-1"></i>حذف
-        </button>
-        </div>
-        `;
-        });
-        }
+            const adminCatList = document.getElementById('admin-categories-list');
+            if(adminCatList) {
+                adminCatList.innerHTML = '';
+                categories.forEach(cat => {
+                    adminCatList.innerHTML += `
+                        <div class="flex items-center justify-between bg-slate-50 border border-slate-200 p-3.5 rounded-2xl shadow-sm">
+                            <div class="flex items-center space-x-3 space-x-reverse">
+                                <img src="${cat.image}" class="w-12 h-12 object-cover rounded-xl shadow-sm border">
+                                <span class="font-bold text-sm text-slate-900">${cat.name}</span>
+                            </div>
+                            <button onclick="deleteCategory('${cat.name}')" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded-xl text-xs font-bold transition">
+                                <i class="fa-solid fa-trash ml-1"></i>حذف
+                            </button>
+                        </div>
+                    `;
+                });
+            }
         }
 
         function changeCategory(catName) {
-        activeCategory = catName;
-        renderCategories();
-        renderProducts();
+            activeCategory = catName;
+            renderCategories();
+            renderProducts();
         }
 
         function renderProducts() {
-        const tbody = document.getElementById('products-table-body');
-        tbody.innerHTML = '';
+            const tbody = document.getElementById('products-table-body');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+            
+            const filtered = products.filter(p => p.category === activeCategory);
+            
+            if(filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" class="text-center py-10 text-slate-400 font-semibold">لا توجد أصناف مضافة في هذا القسم حتى الآن.</td></tr>`;
+                return;
+            }
 
-        const filtered = products.filter(p => p.category === activeCategory);
-
-        if(filtered.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="4" class="text-center py-10 text-slate-400 font-semibold">لا توجد أصناف مضافة في هذا القسم حتى الآن.</td></tr>`;
-        return;
-        }
-
-        filtered.forEach(p => {
-        tbody.innerHTML += `
-        <tr class="border-b hover:bg-slate-50/80 transition">
-        <td class="p-4 flex items-center space-x-3 space-x-reverse">
-        <img src="${p.image}" alt="${p.name}" class="w-14 h-14 object-cover rounded-2xl shadow-sm border border-slate-200">
-        <span class="font-black text-slate-900">${p.name}</span>
-        </td>
-        <td class="p-4"><span class="bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full text-xs font-bold border border-emerald-100">${p.type}</span></td>
-        <td class="p-4 font-black text-emerald-600 text-lg">${p.price} ج.م</td>
-        <td class="p-4 text-center">
-        <button onclick="addToCart('${p.id}')" class="bg-slate-900 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-xl font-bold text-sm transition shadow-md flex items-center justify-center mx-auto space-x-2 space-x-reverse">
-        <i class="fa-solid fa-cart-plus text-amber-400"></i>
-        <span>إضافة للسلة</span>
-        </button>
-        </td>
-        </tr>
-        `;
-        });
+            filtered.forEach(p => {
+                tbody.innerHTML += `
+                    <tr class="border-b hover:bg-slate-50/80 transition">
+                        <td class="p-4 flex items-center space-x-3 space-x-reverse">
+                            <img src="${p.image}" alt="${p.name}" class="w-14 h-14 object-cover rounded-2xl shadow-sm border border-slate-200">
+                            <span class="font-black text-slate-900">${p.name}</span>
+                        </td>
+                        <td class="p-4"><span class="bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full text-xs font-bold border border-emerald-100">${p.type}</span></td>
+                        <td class="p-4 font-black text-emerald-600 text-lg">${p.price} ج.م</td>
+                        <td class="p-4 text-center">
+                            <button onclick="addToCart('${p.id}')" class="bg-slate-900 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-xl font-bold text-sm transition shadow-md flex items-center justify-center mx-auto space-x-2 space-x-reverse">
+                                <i class="fa-solid fa-cart-plus text-amber-400"></i>
+                                <span>إضافة للسلة</span>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
         }
 
         function addToCart(id) {
-        const product = products.find(p => p.id === id);
-        const existing = cart.find(item => item.id === id);
-        if (existing) {
-        existing.qty++;
-        } else {
-        cart.push({ ...product, qty: 1 });
-        }
-        updateCartUI();
+            const product = products.find(p => p.id === id);
+            if (!product) return;
+            const existing = cart.find(item => item.id === id);
+            if (existing) {
+                existing.qty++;
+            } else {
+                cart.push({ ...product, qty: 1 });
+            }
+            updateCartUI();
         }
 
         function updateCartUI() {
-        document.getElementById('cart-count').innerText = cart.reduce((sum, item) => sum + item.qty, 0);
-        const container = document.getElementById('cart-items');
-        container.innerHTML = '';
-        let total = 0;
+            const countEl = document.getElementById('cart-count');
+            if (countEl) countEl.innerText = cart.reduce((sum, item) => sum + item.qty, 0);
+            
+            const container = document.getElementById('cart-items');
+            if (!container) return;
+            container.innerHTML = '';
+            let total = 0;
 
-        if(cart.length === 0) {
-        container.innerHTML = `<div class="text-center text-slate-400 py-12 font-medium">السلة فارغة حالياً</div>`;
-        }
+            if(cart.length === 0) {
+                container.innerHTML = `<div class="text-center text-slate-400 py-12 font-medium">السلة فارغة حالياً</div>`;
+            }
 
-        cart.forEach(item => {
-        total += item.price * item.qty;
-        container.innerHTML += `
-        <div class="flex justify-between items-center border-b border-slate-100 pb-3">
-        <div class="flex items-center space-x-3 space-x-reverse">
-        <img src="${item.image}" class="w-12 h-12 object-cover rounded-xl border border-slate-200">
-        <div>
-        <h4 class="font-bold text-sm text-slate-900">${item.name}</h4>
-        <p class="text-slate-500 text-xs font-medium">${item.price} ج.م (${item.type}) × ${item.qty}</p>
-        </div>
-        </div>
-        <div class="flex items-center space-x-2 space-x-reverse">
-        <button onclick="changeQty('${item.id}', 1)" class="bg-slate-100 hover:bg-slate-200 w-7 h-7 rounded-lg font-bold flex items-center justify-center text-slate-700">+</button>
-        <span class="text-sm font-black w-6 text-center text-slate-900">${item.qty}</span>
-        <button onclick="changeQty('${item.id}', -1)" class="bg-slate-100 hover:bg-slate-200 w-7 h-7 rounded-lg font-bold flex items-center justify-center text-slate-700">-</button>
-        </div>
-        </div>
-        `;
-        });
-        document.getElementById('cart-total').innerText = total + ' ج.م';
+            cart.forEach(item => {
+                total += item.price * item.qty;
+                container.innerHTML += `
+                    <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+                        <div class="flex items-center space-x-3 space-x-reverse">
+                            <img src="${item.image}" class="w-12 h-12 object-cover rounded-xl border border-slate-200">
+                            <div>
+                                <h4 class="font-bold text-sm text-slate-900">${item.name}</h4>
+                                <p class="text-slate-500 text-xs font-medium">${item.price} ج.م (${item.type}) × ${item.qty}</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-2 space-x-reverse">
+                            <button onclick="changeQty('${item.id}', 1)" class="bg-slate-100 hover:bg-slate-200 w-7 h-7 rounded-lg font-bold flex items-center justify-center text-slate-700">+</button>
+                            <span class="text-sm font-black w-6 text-center text-slate-900">${item.qty}</span>
+                            <button onclick="changeQty('${item.id}', -1)" class="bg-slate-100 hover:bg-slate-200 w-7 h-7 rounded-lg font-bold flex items-center justify-center text-slate-700">-</button>
+                        </div>
+                    </div>
+                `;
+            });
+            const totalEl = document.getElementById('cart-total');
+            if (totalEl) totalEl.innerText = total + ' ج.م';
         }
 
         function changeQty(id, delta) {
-        const item = cart.find(i => i.id === id);
-        if (item) {
-        item.qty += delta;
-        if (item.qty <= 0) {
-        cart = cart.filter(i => i.id !== id);
-        }
-        updateCartUI();
-        }
+            const item = cart.find(i => i.id === id);
+            if (item) {
+                item.qty += delta;
+                if (item.qty <= 0) {
+                    cart = cart.filter(i => i.id !== id);
+                }
+                updateCartUI();
+            }
         }
 
         function toggleCart() {
-        document.getElementById('cart-modal').classList.toggle('hidden');
+            const modal = document.getElementById('cart-modal');
+            if (modal) modal.classList.toggle('hidden');
         }
 
         function openCheckoutModal() {
-        if (cart.length === 0) {
-        alert('السلة فارغة!');
-        return;
-        }
-        toggleCart();
-        document.getElementById('checkout-modal').classList.remove('hidden');
+            if (cart.length === 0) {
+                alert('السلة فارغة!');
+                return;
+            }
+            toggleCart();
+            const checkoutModal = document.getElementById('checkout-modal');
+            if (checkoutModal) checkoutModal.classList.remove('hidden');
         }
 
         function closeCheckoutModal() {
-        document.getElementById('checkout-modal').classList.add('hidden');
+            const checkoutModal = document.getElementById('checkout-modal');
+            if (checkoutModal) checkoutModal.classList.add('hidden');
         }
 
         function submitOrder(e) {
-        e.preventDefault();
-        const name = document.getElementById('cust-name').value.trim();
-        const phone = document.getElementById('cust-phone').value.trim();
-        const address = document.getElementById('cust-address').value.trim();
-        const notes = document.getElementById('cust-notes').value.trim();
+            e.preventDefault();
+            const nameEl = document.getElementById('cust-name');
+            const phoneEl = document.getElementById('cust-phone');
+            const addressEl = document.getElementById('cust-address');
+            const notesEl = document.getElementById('cust-notes');
 
-        let total = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
+            if (!nameEl || !phoneEl || !addressEl) return;
 
-        const newOrder = {
-        id: 'ORD-' + Math.floor(1000 + Math.random() * 9000),
-        date: new Date().toLocaleString('ar-EG'),
-        customer: { name, phone, address, notes },
-        items: [...cart],
-        total: total
-        };
+            const name = nameEl.value.trim();
+            const phone = phoneEl.value.trim();
+            const address = addressEl.value.trim();
+            const notes = notesEl ? notesEl.value.trim() : '';
 
-        orders.unshift(newOrder);
-        saveData();
+            let total = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
 
-        cart = [];
-        updateCartUI();
-        document.getElementById('cust-name').value = '';
-        document.getElementById('cust-phone').value = '';
-        document.getElementById('cust-address').value = '';
-        document.getElementById('cust-notes').value = '';
-
-        closeCheckoutModal();
-        alert('تم إرسال طلبك بنجاح! سيتم التواصل معك قريباً لتأكيد التوصيل.');
-        }
-
-        function openAdminModal() { document.getElementById('admin-login-modal').classList.remove('hidden'); }
-        function closeAdminModal() { document.getElementById('admin-login-modal').classList.add('hidden'); }
-
-        function verifyAdmin() {
-        const pass = document.getElementById('admin-pass').value;
-        if (pass === '1234') {
-        closeAdminModal();
-        document.getElementById('admin-pass').value = '';
-        document.getElementById('admin-dashboard').classList.remove('hidden');
-        renderCategories();
-        renderAdminTable();
-        renderAdminOrders();
-        } else {
-        alert('كلمة المرور غير صحيحة! الباسورد الافتراضي هو 1234');
-        }
-        }
-
-        function closeAdminDashboard() {
-        document.getElementById('admin-dashboard').classList.add('hidden');
-        renderCategories();
-        renderProducts();
-        }
-
-        function renderAdminOrders() {
-        const tbody = document.getElementById('admin-orders-body');
-        const badge = document.getElementById('orders-badge');
-        badge.innerText = orders.length;
-        tbody.innerHTML = '';
-
-        if(orders.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="5" class="text-center py-6 text-slate-400 font-medium">لا توجد طلبات جديدة حتى الآن.</td></tr>`;
-        return;
-        }
-
-        orders.forEach(o => {
-        let itemsList = o.items.map(i => `• ${i.name} (${i.type}) × ${i.qty}`).join('<br>');
-        tbody.innerHTML += `
-        <tr class="border-b hover:bg-slate-50">
-        <td class="p-3">
-        <span class="font-black text-emerald-700">${o.id}</span><br>
-        <span class="text-xs text-slate-500 font-medium">${o.date}</span>
-        </td>
-        <td class="p-3">
-        <span class="font-bold text-slate-900">${o.customer.name}</span><br>
-        <span class="text-xs text-slate-600 font-medium"><i class="fa-solid fa-phone ml-1"></i>${o.customer.phone}</span><br>
-        <span class="text-xs text-slate-500 font-medium"><i class="fa-solid fa-location-dot ml-1"></i>${o.customer.address}</span>
-        ${o.customer.notes ? `<br><span class="text-xs text-amber-600 font-bold">ملاحظات: ${o.customer.notes}</span>` : ''}
-        </td>
-        <td class="p-3 text-xs leading-relaxed text-slate-700 font-medium">${itemsList}</td>
-        <td class="p-3 font-black text-emerald-600">${o.total} ج.م</td>
-        <td class="p-3 text-center">
-        <button onclick="deleteOrder('${o.id}')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-xl text-xs font-bold transition">
-        <i class="fa-solid fa-check ml-1"></i>تم وحذف
-        </button>
-        </td>
-        </tr>
-        `;
-        });
-        }
-
-        function deleteOrder(id) {
-        if(confirm('هل تم تسليم الطلب وتريد حذفه من قائمة الطلبات الواردة؟')) {
-        orders = orders.filter(o => o.id !== id);
-        saveData();
-        renderAdminOrders();
-        }
-        }
-
-        function addCategory(e) {
-        e.preventDefault();
-        const name = document.getElementById('cat-name').value.trim();
-        const imageFile = document.getElementById('cat-image').files[0];
-
-        if(categories.some(c => c.name === name)) {
-        alert('هذا القسم موجود بالفعل.');
-        return;
-        }
-
-        if (imageFile) {
-        const reader = new FileReader();
-        reader.onload = function(uploadEvent) {
-        categories.push({
-        name: name,
-        image: uploadEvent.target.result
-        });
-        saveData();
-        renderCategories();
-        renderAdminTable();
-        document.getElementById('cat-name').value = '';
-        document.getElementById('cat-image').value = '';
-        alert('تمت إضافة القسم وصورته بنجاح!');
-        };
-        reader.readAsDataURL(imageFile);
-        }
-        }
-
-        function deleteCategory(catName) {
-        if (categories.length <= 1) {
-        alert('لا يمكنك حذف كل الأقسام، يجب أن يتبقى قسم واحد على الأقل.');
-        return;
-        }
-        if (confirm(`هل أنت متأكد من حذف قسم "${catName}" وكل الأصناف الموجودة بداخله؟`)) {
-        categories = categories.filter(c => c.name !== catName);
-        products = products.filter(p => p.category !== catName);
-        saveData();
-        renderCategories();
-        renderProducts();
-        renderAdminTable();
-        alert('تم الحذف بنجاح.');
-        }
-        }
-
-        function addProduct(e) {
-        e.preventDefault();
-        const category = document.getElementById('p-category').value;
-        const name = document.getElementById('p-name').value.trim();
-        const type = document.getElementById('p-type').value;
-        const price = parseFloat(document.getElementById('p-price').value);
-        const imageFile = document.getElementById('p-image').files[0];
-
-        if (!imageFile) {
-        alert('الرجاء اختيار صورة للصنف.');
-        return;
-        }
-
-        const reader = new FileReader();
-        reader.onload = function(uploadEvent) {
-        const newProduct = {
-        id: 'p_' + Date.now(),
-        category,
-        name,
-        type,
-        price,
-        image: uploadEvent.target.result
-        };
-
-        products.push(newProduct);
-        saveData();
-        renderProducts();
-        renderAdminTable();
-        document.getElementById('p-name').value = '';
-        document.getElementById('p-price').value = '';
-        document.getElementById('p-image').value = '';
-        alert('تمت إضافة الصنف وصورته بنجاح!');
-        };
-        reader.readAsDataURL(imageFile);
-        }
-
-        function deleteProduct(id) {
-        if (confirm('هل أنت متأكد من حذف هذا الصنف؟')) {
-        products = products.filter(p => p.id !== id);
-        saveData();
-        renderProducts();
-        renderAdminTable();
-        }
-        }
-
-        function renderAdminTable() {
-        const tbody = document.getElementById('admin-table-body');
-        tbody.innerHTML = '';
-        if(products.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-slate-400 font-medium">لا توجد أصناف مضافة بعد.</td></tr>`;
-        return;
-        }
-        products.forEach(p => {
-        tbody.innerHTML += `
-        <tr class="border-b hover:bg-slate-50">
-        <td class="p-3">
-        <img src="${p.image}" class="w-12 h-12 object-cover rounded-xl border border-slate-200 shadow-sm">
-        </td>
-        <td class="p-3 font-bold text-slate-900">${p.name}</td>
-        <td class="p-3 text-sm text-emerald-700 font-bold">${p.category}</td>
-        <td class="p-3"><span class="bg-slate-100 px-2.5 py-1 rounded-lg text-xs font-bold text-slate-700">${p.type}</span></td>
-        <td class="p-3 font-black text-slate-900">${p.price} ج.م</td>
-        <td class="p-3">
-        <button onclick="deleteProduct('${p.id}')" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded-xl text-xs font-bold transition">حذف</button>
-        </td>
-        </tr>
-        `;
-        });
-        }
-
-        // نافذة المصمم Ahmed Younes
-        (() => {
-        const modal = document.getElementById("ay-modal");
-        const openBtn = document.getElementById("ay-open");
-        const closeBtn = document.getElementById("ay-close");
-
-        if (!modal || !openBtn || !closeBtn) return;
-
-        function openModal() {
-        modal.classList.add("ay-open");
-        closeBtn.focus();
-        }
-
-        function closeModal() {
-        modal.classList.remove("ay-open");
-        openBtn.focus();
-        }
-
-        openBtn.addEventListener("click", openModal);
-        closeBtn.addEventListener("click", closeModal);
-
-        modal.addEventListener("click", (event) => {
-        if (event.target === modal) closeModal();
-        });
-
-        document.addEventListener("keydown", (event) => {
-        if (event.key === "Escape" && modal.classList.contains("ay-open")) {
-        closeModal();
-        }
-        });
-        })();
-
-        // تشغيل أولي
-        renderCategories();
-        renderProducts();
-        updateCartUI();
-    </script>
-</body>
-</html>
+            const newOrder = {
+                id: 'ORD-' + Math.floor(1000 + Math.random() * 9000),
+                date: new Date().toLocaleString
