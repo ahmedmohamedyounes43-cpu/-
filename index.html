@@ -264,7 +264,6 @@
 
         const DEFAULT_IMG = "https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=400&q=80";
 
-        // بيانات أولية فورية لكي تظهر الأقسام بسررعة بدون أي انتظار
         let categories = [
             { firebaseKey: 'c1', name: 'شيبسي وسناكس', image: 'https://images.unsplash.com/photo-1566478989037-eec170784d0b?auto=format&fit=crop&w=600&q=80' },
             { firebaseKey: 'c2', name: 'بسكوت وحلويات', image: 'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?auto=format&fit=crop&w=600&q=80' }
@@ -274,35 +273,45 @@
         let cart = [];
         let activeCategory = 'شيبسي وسناكس';
 
-        // دالة الإغلاق عند النقر خارج النافذة
         function checkModalClose(event, modalId) {
             if (event.target.classList.contains('app-modal')) {
                 document.getElementById(modalId).classList.remove('show');
-                if(modalId === 'admin-dashboard') {
-                    renderProducts();
-                }
             }
         }
 
         function initCloudSync() {
-            // عرض فوري أولي قبل جلب السحابة
             renderCategories();
 
+            // فحص وتشغيل الأقسام
             db.ref('categories').on('value', (snapshot) => {
                 const data = snapshot.val();
                 if (data) {
                     categories = Object.keys(data).map(key => ({ ...data[key], firebaseKey: key }));
+                } else {
+                    // لو القاعدة فارغة، يتم تعبئتها أوتوماتيكياً بالافتراضي
+                    db.ref('categories').set({
+                        c1: { name: 'شيبسي وسناكس', image: 'https://images.unsplash.com/photo-1566478989037-eec170784d0b?auto=format&fit=crop&w=600&q=80' },
+                        c2: { name: 'بسكوت وحلويات', image: 'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?auto=format&fit=crop&w=600&q=80' }
+                    });
                 }
                 renderCategories();
                 renderAdminCategoryList();
             });
 
+            // فحص وتشغيل المنتجات
             db.ref('products').on('value', (snapshot) => {
                 const data = snapshot.val();
                 if (data) {
                     products = Object.keys(data).map(key => ({ ...data[key], firebaseKey: key }));
                 } else {
-                    products = [];
+                    // منتج تجريبي افتراضي لو المنتجات فارغة
+                    db.ref('products').push({
+                        category: 'شيبسي وسناكس',
+                        name: 'كرتونة شيبسي مشكل',
+                        type: 'كرتونة',
+                        price: 1500,
+                        image: DEFAULT_IMG
+                    });
                 }
                 renderProducts();
                 renderAdminTable();
