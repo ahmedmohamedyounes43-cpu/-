@@ -125,14 +125,13 @@
     </footer>
 
     <!-- نافذة السلة -->
-    <div id="cart-modal" class="app-modal justify-end">
+    <div id="cart-modal" class="app-modal justify-end modal-backdrop" onclick="checkModalClose(event, 'cart-modal')">
         <div class="bg-white w-full max-w-md h-full shadow-2xl flex flex-col p-6 overflow-y-auto">
             <div class="flex justify-between items-center border-b pb-4 mb-4">
                 <h3 class="text-xl font-black text-slate-900 flex items-center"><i class="fa-solid fa-cart-shopping text-emerald-600 ml-2"></i>سلة الطلبات</h3>
                 <button type="button" id="close-cart-btn" class="text-slate-400 hover:text-red-500 text-2xl font-bold w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center">✕</button>
             </div>
             
-            <!-- أزرار التحكم بالسلة (تفريغ السلة) -->
             <div id="cart-actions-bar" class="mb-3 flex justify-between items-center hidden">
                 <span class="text-xs text-slate-500 font-bold">مراجعة الأصناف والكميات</span>
                 <button type="button" onclick="clearCart()" class="text-red-500 hover:text-red-700 text-xs font-bold bg-red-50 px-2.5 py-1 rounded-lg border border-red-100 transition cursor-pointer">
@@ -152,7 +151,7 @@
     </div>
 
     <!-- نافذة إتمام الطلب -->
-    <div id="checkout-modal" class="app-modal items-center justify-center p-4">
+    <div id="checkout-modal" class="app-modal items-center justify-center p-4 modal-backdrop" onclick="checkModalClose(event, 'checkout-modal')">
         <div class="bg-white p-6 rounded-3xl shadow-2xl w-full max-w-md">
             <div class="flex justify-between items-center border-b pb-3 mb-4">
                 <h3 class="text-xl font-black text-slate-900">بيانات الشحن والتوصيل</h3>
@@ -168,7 +167,7 @@
     </div>
 
     <!-- نافذة تسجيل دخول الأدمن -->
-    <div id="admin-login-modal" class="app-modal items-center justify-center p-4">
+    <div id="admin-login-modal" class="app-modal items-center justify-center p-4 modal-backdrop" onclick="checkModalClose(event, 'admin-login-modal')">
         <div class="bg-white p-8 rounded-3xl shadow-2xl w-full max-w-sm">
             <h3 class="text-xl font-black text-slate-900 mb-4 text-center">دخول لوحة التحكم</h3>
             <input type="password" id="admin-pass" class="w-full border p-2.5 rounded-xl bg-slate-50 mb-4" placeholder="أدخل كلمة المرور (1234)">
@@ -180,12 +179,12 @@
     </div>
 
     <!-- لوحة تحكم الأدمن -->
-    <div id="admin-dashboard" class="app-modal flex-col overflow-y-auto bg-slate-100">
-        <div class="bg-slate-900 text-white p-4 shadow-md flex justify-between items-center sticky top-0 z-10">
+    <div id="admin-dashboard" class="app-modal flex-col overflow-y-auto bg-slate-100 modal-backdrop" onclick="checkModalClose(event, 'admin-dashboard')">
+        <div class="bg-slate-900 text-white p-4 shadow-md flex justify-between items-center sticky top-0 z-10" onclick="event.stopPropagation()">
             <h2 class="text-xl font-black"><i class="fa-solid fa-gauge text-amber-400 ml-2"></i>لوحة تحكم الأدمن</h2>
             <button type="button" id="close-admin-dashboard-btn" class="bg-red-600 text-white px-4 py-2 rounded-xl text-sm font-bold">إغلاق</button>
         </div>
-        <div class="container mx-auto px-4 py-8 space-y-8">
+        <div class="container mx-auto px-4 py-8 space-y-8" onclick="event.stopPropagation()">
             <!-- طلبات العملاء الواردة -->
             <div class="bg-white p-6 rounded-3xl shadow-xl">
                 <h3 class="text-lg font-black mb-4">طلبات العملاء الواردة (<span id="orders-badge">0</span>)</h3>
@@ -265,23 +264,34 @@
 
         const DEFAULT_IMG = "https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=400&q=80";
 
-        let categories = [];
+        // بيانات أولية فورية لكي تظهر الأقسام بسررعة بدون أي انتظار
+        let categories = [
+            { firebaseKey: 'c1', name: 'شيبسي وسناكس', image: 'https://images.unsplash.com/photo-1566478989037-eec170784d0b?auto=format&fit=crop&w=600&q=80' },
+            { firebaseKey: 'c2', name: 'بسكوت وحلويات', image: 'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?auto=format&fit=crop&w=600&q=80' }
+        ];
         let products = [];
         let orders = [];
         let cart = [];
-        let activeCategory = '';
+        let activeCategory = 'شيبسي وسناكس';
+
+        // دالة الإغلاق عند النقر خارج النافذة
+        function checkModalClose(event, modalId) {
+            if (event.target.classList.contains('app-modal')) {
+                document.getElementById(modalId).classList.remove('show');
+                if(modalId === 'admin-dashboard') {
+                    renderProducts();
+                }
+            }
+        }
 
         function initCloudSync() {
+            // عرض فوري أولي قبل جلب السحابة
+            renderCategories();
+
             db.ref('categories').on('value', (snapshot) => {
                 const data = snapshot.val();
                 if (data) {
                     categories = Object.keys(data).map(key => ({ ...data[key], firebaseKey: key }));
-                } else {
-                    categories = [
-                        { firebaseKey: 'c1', name: 'شيبسي وسناكس', image: 'https://images.unsplash.com/photo-1566478989037-eec170784d0b?auto=format&fit=crop&w=600&q=80' },
-                        { firebaseKey: 'c2', name: 'بسكوت وحلويات', image: 'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?auto=format&fit=crop&w=600&q=80' }
-                    ];
-                    db.ref('categories').set(categories);
                 }
                 renderCategories();
                 renderAdminCategoryList();
@@ -373,7 +383,7 @@
             const tbody = document.getElementById('products-table-body');
             if (!tbody) return;
             const list = products.filter(p => p.category === activeCategory);
-            tbody.innerHTML = list.length === 0 ? `<tr><td colspan="4" class="p-6 text-center text-slate-400">لا توجد منتجات في هذا القسم</td></tr>` : list.map(p => `
+            tbody.innerHTML = list.length === 0 ? `<tr><td colspan="4" class="p-6 text-center text-slate-400">لا توجد منتجات مضافة في هذا القسم</td></tr>` : list.map(p => `
                 <tr class="border-b hover:bg-slate-50">
                     <td class="p-4 flex items-center gap-3">
                         <img src="${p.image || DEFAULT_IMG}" onerror="this.src='${DEFAULT_IMG}'" class="w-12 h-12 object-cover rounded-xl border">
@@ -419,7 +429,6 @@
                     </div>
                     <div class="flex items-center gap-1.5">
                         <button type="button" onclick="changeQty('${i.firebaseKey}', -1)" class="bg-slate-100 hover:bg-slate-200 w-7 h-7 rounded font-bold flex items-center justify-center cursor-pointer">-</button>
-                        <!-- حقل إدخال مباشر لتحديد الكمية -->
                         <input type="number" min="1" value="${i.qty}" onchange="setQty('${i.firebaseKey}', this.value)" class="w-12 text-center border rounded font-black text-sm py-0.5 bg-slate-50">
                         <button type="button" onclick="changeQty('${i.firebaseKey}', 1)" class="bg-slate-100 hover:bg-slate-200 w-7 h-7 rounded font-bold flex items-center justify-center cursor-pointer">+</button>
                         <button type="button" onclick="removeFromCart('${i.firebaseKey}')" class="text-red-500 hover:text-red-700 px-1 text-xs ml-1"><i class="fa-solid fa-trash"></i></button>
@@ -440,7 +449,6 @@
             }
         }
 
-        // تعيين الكمية مباشرة عند كتابتها في المربع
         function setQty(firebaseKey, val) {
             const qty = parseInt(val);
             const item = cart.find(c => c.firebaseKey === firebaseKey);
@@ -459,7 +467,6 @@
             updateCartUI();
         }
 
-        // تفريغ السلة بالكامل
         function clearCart() {
             if (confirm("هل تريد تفريغ السلة بالكامل؟")) {
                 cart = [];
