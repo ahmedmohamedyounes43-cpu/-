@@ -156,12 +156,12 @@
                 </div>
             </div>
             <div class="flex items-center space-x-3 space-x-reverse">
-                <button onclick="toggleCart()" class="relative bg-white/10 hover:bg-white/20 border border-white/20 px-4 py-2.5 rounded-xl flex items-center space-x-2 space-x-reverse transition backdrop-blur-sm font-semibold">
+                <button id="btn-open-cart" onclick="toggleCart()" class="relative bg-white/10 hover:bg-white/20 border border-white/20 px-4 py-2.5 rounded-xl flex items-center space-x-2 space-x-reverse transition backdrop-blur-sm font-semibold cursor-pointer">
                     <i class="fa-solid fa-cart-shopping text-amber-400"></i>
                     <span>السلة</span>
                     <span id="cart-count" class="bg-amber-500 text-slate-950 text-xs px-2 py-0.5 rounded-full font-black">0</span>
                 </button>
-                <button onclick="openAdminModal()" class="bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold px-4 py-2.5 rounded-xl flex items-center space-x-2 space-x-reverse transition shadow-md">
+                <button id="btn-open-admin" onclick="openAdminModal()" class="bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold px-4 py-2.5 rounded-xl flex items-center space-x-2 space-x-reverse transition shadow-md cursor-pointer">
                     <i class="fa-solid fa-lock text-sm"></i>
                     <span>لوحة التحكم</span>
                 </button>
@@ -265,7 +265,7 @@
                 <h3 class="text-xl font-black text-slate-900 flex items-center">
                     <i class="fa-solid fa-cart-shopping text-emerald-600 ml-2"></i>سلة الطلبات
                 </h3>
-                <button onclick="toggleCart()" class="text-slate-400 hover:text-red-500 text-xl font-bold w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center transition"><i class="fa-solid fa-xmark"></i></button>
+                <button onclick="toggleCart()" class="text-slate-400 hover:text-red-500 text-xl font-bold w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center transition cursor-pointer"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div id="cart-items" class="flex-grow space-y-4 overflow-y-auto mb-4">
                 <!-- عناصر السلة -->
@@ -275,7 +275,7 @@
                     <span class="text-slate-700">الإجمالي:</span>
                     <span id="cart-total" class="text-emerald-700">0 ج.م</span>
                 </div>
-                <button onclick="openCheckoutModal()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 rounded-2xl transition shadow-lg shadow-emerald-600/30">إتمام وتأكيد الطلب</button>
+                <button onclick="openCheckoutModal()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 rounded-2xl transition shadow-lg shadow-emerald-600/30 cursor-pointer">إتمام وتأكيد الطلب</button>
             </div>
         </div>
     </div>
@@ -285,7 +285,7 @@
         <div class="bg-white p-6 md:p-8 rounded-3xl shadow-2xl w-full max-w-md">
             <div class="flex justify-between items-center border-b pb-3 mb-4">
                 <h3 class="text-xl font-black text-slate-900">بيانات الشحن والتوصيل</h3>
-                <button onclick="closeCheckoutModal()" class="text-slate-400 hover:text-red-500 text-lg"><i class="fa-solid fa-xmark"></i></button>
+                <button onclick="closeCheckoutModal()" class="text-slate-400 hover:text-red-500 text-lg cursor-pointer"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <form onsubmit="submitOrder(event)" class="space-y-4">
                 <div>
@@ -305,7 +305,7 @@
                     <input type="text" id="cust-notes" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-slate-50 font-medium" placeholder="أي تعليمات خاصة بالتوصيل">
                 </div>
                 <div class="pt-2">
-                    <button type="submit" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3.5 rounded-2xl transition shadow-lg">إرسال الطلب الآن</button>
+                    <button type="submit" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3.5 rounded-2xl transition shadow-lg cursor-pointer">إرسال الطلب الآن</button>
                 </div>
             </form>
         </div>
@@ -319,346 +319,4 @@
                 <label class="block text-sm font-bold text-slate-700 mb-2">كلمة المرور</label>
                 <input type="password" id="admin-pass" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-slate-50" placeholder="أدخل كلمة المرور">
             </div>
-            <div class="flex justify-end space-x-2 space-x-reverse">
-                <button onclick="closeAdminModal()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2.5 rounded-xl font-bold">إلغاء</button>
-                <button onclick="verifyAdmin()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-xl font-bold">دخول</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- لوحة تحكم الأدمن -->
-    <div id="admin-dashboard" class="fixed inset-0 bg-slate-100 z-50 hidden overflow-y-auto">
-        <div class="bg-slate-900 text-white p-4 shadow-md flex justify-between items-center sticky top-0 z-10">
-            <h2 class="text-xl font-black flex items-center">
-                <i class="fa-solid fa-gauge text-amber-400 ml-2"></i>لوحة تحكم الأدمن - أبو إسلام للجملة
-            </h2>
-            <button onclick="closeAdminDashboard()" class="bg-red-600 hover:bg-red-500 px-4 py-2 rounded-xl font-bold text-sm transition">إغلاق لوحة التحكم</button>
-        </div>
-        <div class="container mx-auto px-4 py-8 space-y-8">
-            
-            <!-- طلبات العملاء الواردة -->
-            <div class="bg-white p-6 md:p-8 rounded-3xl shadow-xl border border-slate-200">
-                <h3 class="text-lg font-black text-slate-900 mb-4 flex items-center">
-                    <i class="fa-solid fa-clipboard-list text-amber-500 ml-2"></i>
-                    <span>طلبات العملاء الواردة</span>
-                    <span id="orders-badge" class="mr-3 bg-red-500 text-white text-xs px-2.5 py-1 rounded-full font-bold">0</span>
-                </h3>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-right border-collapse text-sm">
-                        <thead>
-                            <tr class="border-b bg-slate-50 text-slate-800">
-                                <th class="p-3 font-bold">رقم الطلب والتاريخ</th>
-                                <th class="p-3 font-bold">بيانات العميل</th>
-                                <th class="p-3 font-bold">الأصناف المطلوبة</th>
-                                <th class="p-3 font-bold">الإجمالي</th>
-                                <th class="p-3 text-center font-bold">إجراء</th>
-                            </tr>
-                        </thead>
-                        <tbody id="admin-orders-body">
-                            <!-- الطلبات -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- إضافة قسم جديد مع صورة -->
-            <div class="bg-white p-6 md:p-8 rounded-3xl shadow-xl border border-slate-200">
-                <h3 class="text-lg font-black text-slate-900 mb-4">إضافة قسم جديد مع رفع صورته من الجهاز</h3>
-                <form onsubmit="addCategory(event)" class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
-                    <div>
-                        <label class="block text-sm font-bold text-slate-700 mb-1">اسم القسم</label>
-                        <input type="text" id="cat-name" required class="w-full border border-slate-200 rounded-xl px-4 py-2.5 bg-slate-50" placeholder="مثال: شيبسي وسناكس">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-bold text-slate-700 mb-1">صورة القسم من الجهاز</label>
-                        <input type="file" id="cat-image" accept="image/*" required class="w-full border border-slate-200 rounded-xl px-3 py-2 bg-slate-50 text-sm">
-                    </div>
-                    <div>
-                        <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl transition shadow-md">إضافة القسم</button>
-                    </div>
-                </form>
-
-                <h4 class="font-bold text-sm text-slate-700 mt-8 mb-3">الأقسام الحالية وإمكانية الحذف:</h4>
-                <div id="admin-categories-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                    <!-- الأقسام -->
-                </div>
-            </div>
-
-            <!-- إضافة صنف داخل قسم (مع صورة المنتج) -->
-            <div class="bg-white p-6 md:p-8 rounded-3xl shadow-xl border border-slate-200">
-                <h3 class="text-lg font-black text-slate-900 mb-4">إضافة صنف / منتج جديد مع صورته</h3>
-                <form id="add-product-form" onsubmit="addProduct(event)" class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
-                    <div>
-                        <label class="block text-sm font-bold text-slate-700 mb-1">اختر القسم</label>
-                        <select id="p-category" required class="w-full border border-slate-200 rounded-xl px-4 py-2.5 bg-slate-50">
-                            <!-- الأقسام -->
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-bold text-slate-700 mb-1">اسم الصنف</label>
-                        <input type="text" id="p-name" required class="w-full border border-slate-200 rounded-xl px-4 py-2.5 bg-slate-50" placeholder="مثال: شيبسي شطة وليمون">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-bold text-slate-700 mb-1">صورة الصنف من الجهاز *</label>
-                        <input type="file" id="p-image" accept="image/*" required class="w-full border border-slate-200 rounded-xl px-3 py-2 bg-slate-50 text-sm">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-bold text-slate-700 mb-1">طريقة البيع</label>
-                        <select id="p-type" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 bg-slate-50">
-                            <option value="كرتونة">كرتونة (جملة)</option>
-                            <option value="قطعة">قطعة منفردة</option>
-                            <option value="دستة">دستة</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-bold text-slate-700 mb-1">السعر (بالجنيه)</label>
-                        <input type="number" id="p-price" required class="w-full border border-slate-200 rounded-xl px-4 py-2.5 bg-slate-50" placeholder="مثال: 250">
-                    </div>
-                    <div>
-                        <button type="submit" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 rounded-xl transition shadow-md">حفظ وإضافة الصنف</button>
-                    </div>
-                </form>
-            </div>
-
-            <!-- قائمة الأصناف المسجلة -->
-            <div class="bg-white p-6 md:p-8 rounded-3xl shadow-xl border border-slate-200">
-                <h3 class="text-lg font-black text-slate-900 mb-4">جميع الأصناف الحالية</h3>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-right border-collapse">
-                        <thead>
-                            <tr class="border-b bg-slate-50 text-slate-700 text-sm">
-                                <th class="p-3 font-bold">صورة الصنف</th>
-                                <th class="p-3 font-bold">اسم الصنف</th>
-                                <th class="p-3 font-bold">القسم</th>
-                                <th class="p-3 font-bold">طريقة البيع</th>
-                                <th class="p-3 font-bold">السعر</th>
-                                <th class="p-3 font-bold">إجراء</th>
-                            </tr>
-                        </thead>
-                        <tbody id="admin-table-body">
-                            <!-- الأصناف -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-        </div>
-    </div>
-
-    <!-- كود الجافاسكريبت -->
-    <script>
-        let categories = JSON.parse(localStorage.getItem('wholesale_categories_v7')) || [
-            { name: 'شيبسي وسناكس', image: 'https://images.unsplash.com/photo-1566478989037-eec170784d0b?auto=format&fit=crop&w=600&q=80' },
-            { name: 'بسكوت وحلويات', image: 'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?auto=format&fit=crop&w=600&q=80' },
-            { name: 'مشروبات باردة', image: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=600&q=80' }
-        ];
-
-        let products = JSON.parse(localStorage.getItem('wholesale_products_v7')) || [
-            { id: '1', category: 'شيبسي وسناكس', name: 'كرتونة شيبسي مشكل', type: 'كرتونة', price: 1500, image: 'https://images.unsplash.com/photo-1566478989037-eec170784d0b?auto=format&fit=crop&w=200&q=80' },
-            { id: '2', category: 'شيبسي وسناكس', name: 'شيبسي كيس مفرد', type: 'قطعة', price: 6, image: 'https://images.unsplash.com/photo-1566478989037-eec170784d0b?auto=format&fit=crop&w=200&q=80' },
-            { id: '3', category: 'بسكوت وحلويات', name: 'دستة بسكوت أوريو', type: 'دستة', price: 120, image: 'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?auto=format&fit=crop&w=200&q=80' }
-        ];
-
-        let orders = JSON.parse(localStorage.getItem('wholesale_orders_v7')) || [];
-
-        let cart = [];
-        let activeCategory = categories.length > 0 ? categories[0].name : '';
-
-        function saveData() {
-            localStorage.setItem('wholesale_categories_v7', JSON.stringify(categories));
-            localStorage.setItem('wholesale_products_v7', JSON.stringify(products));
-            localStorage.setItem('wholesale_orders_v7', JSON.stringify(orders));
-        }
-
-        function renderCategories() {
-            const tabsContainer = document.getElementById('categories-tabs');
-            if (!tabsContainer) return;
-            tabsContainer.innerHTML = '';
-            
-            if(!categories.some(c => c.name === activeCategory) && categories.length > 0) {
-                activeCategory = categories[0].name;
-            }
-
-            categories.forEach(cat => {
-                const isActive = cat.name === activeCategory;
-                tabsContainer.innerHTML += `
-                    <button onclick="changeCategory('${cat.name}')" class="px-6 py-3 rounded-2xl font-bold transition flex items-center space-x-2 space-x-reverse shadow-sm ${isActive ? 'bg-emerald-700 text-white shadow-lg shadow-emerald-700/25 scale-105' : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50'}">
-                        <span>${cat.name}</span>
-                    </button>
-                `;
-            });
-
-            const currentCatObj = categories.find(c => c.name === activeCategory);
-            const bannerImgContainer = document.getElementById('banner-image-container');
-            const bannerTitle = document.getElementById('banner-title');
-            const tableTitle = document.getElementById('table-header-title');
-
-            if(currentCatObj && bannerImgContainer && bannerTitle && tableTitle) {
-                bannerTitle.innerText = currentCatObj.name;
-                tableTitle.innerHTML = `<i class="fa-solid fa-boxes-stacked text-amber-400 ml-2"></i><span>أصناف قسم: ${currentCatObj.name}</span>`;
-                bannerImgContainer.innerHTML = `<img src="${currentCatObj.image}" alt="${currentCatObj.name}" class="w-full h-full object-cover">`;
-            }
-
-            const select = document.getElementById('p-category');
-            if(select) {
-                select.innerHTML = '';
-                categories.forEach(cat => {
-                    select.innerHTML += `<option value="${cat.name}">${cat.name}</option>`;
-                });
-            }
-
-            const adminCatList = document.getElementById('admin-categories-list');
-            if(adminCatList) {
-                adminCatList.innerHTML = '';
-                categories.forEach(cat => {
-                    adminCatList.innerHTML += `
-                        <div class="flex items-center justify-between bg-slate-50 border border-slate-200 p-3.5 rounded-2xl shadow-sm">
-                            <div class="flex items-center space-x-3 space-x-reverse">
-                                <img src="${cat.image}" class="w-12 h-12 object-cover rounded-xl shadow-sm border">
-                                <span class="font-bold text-sm text-slate-900">${cat.name}</span>
-                            </div>
-                            <button onclick="deleteCategory('${cat.name}')" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded-xl text-xs font-bold transition">
-                                <i class="fa-solid fa-trash ml-1"></i>حذف
-                            </button>
-                        </div>
-                    `;
-                });
-            }
-        }
-
-        function changeCategory(catName) {
-            activeCategory = catName;
-            renderCategories();
-            renderProducts();
-        }
-
-        function renderProducts() {
-            const tbody = document.getElementById('products-table-body');
-            if (!tbody) return;
-            tbody.innerHTML = '';
-            
-            const filtered = products.filter(p => p.category === activeCategory);
-            
-            if(filtered.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" class="text-center py-10 text-slate-400 font-semibold">لا توجد أصناف مضافة في هذا القسم حتى الآن.</td></tr>`;
-                return;
-            }
-
-            filtered.forEach(p => {
-                tbody.innerHTML += `
-                    <tr class="border-b hover:bg-slate-50/80 transition">
-                        <td class="p-4 flex items-center space-x-3 space-x-reverse">
-                            <img src="${p.image}" alt="${p.name}" class="w-14 h-14 object-cover rounded-2xl shadow-sm border border-slate-200">
-                            <span class="font-black text-slate-900">${p.name}</span>
-                        </td>
-                        <td class="p-4"><span class="bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full text-xs font-bold border border-emerald-100">${p.type}</span></td>
-                        <td class="p-4 font-black text-emerald-600 text-lg">${p.price} ج.م</td>
-                        <td class="p-4 text-center">
-                            <button onclick="addToCart('${p.id}')" class="bg-slate-900 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-xl font-bold text-sm transition shadow-md flex items-center justify-center mx-auto space-x-2 space-x-reverse">
-                                <i class="fa-solid fa-cart-plus text-amber-400"></i>
-                                <span>إضافة للسلة</span>
-                            </button>
-                        </td>
-                    </tr>
-                `;
-            });
-        }
-
-        function addToCart(id) {
-            const product = products.find(p => p.id === id);
-            if (!product) return;
-            const existing = cart.find(item => item.id === id);
-            if (existing) {
-                existing.qty++;
-            } else {
-                cart.push({ ...product, qty: 1 });
-            }
-            updateCartUI();
-        }
-
-        function updateCartUI() {
-            const countEl = document.getElementById('cart-count');
-            if (countEl) countEl.innerText = cart.reduce((sum, item) => sum + item.qty, 0);
-            
-            const container = document.getElementById('cart-items');
-            if (!container) return;
-            container.innerHTML = '';
-            let total = 0;
-
-            if(cart.length === 0) {
-                container.innerHTML = `<div class="text-center text-slate-400 py-12 font-medium">السلة فارغة حالياً</div>`;
-            }
-
-            cart.forEach(item => {
-                total += item.price * item.qty;
-                container.innerHTML += `
-                    <div class="flex justify-between items-center border-b border-slate-100 pb-3">
-                        <div class="flex items-center space-x-3 space-x-reverse">
-                            <img src="${item.image}" class="w-12 h-12 object-cover rounded-xl border border-slate-200">
-                            <div>
-                                <h4 class="font-bold text-sm text-slate-900">${item.name}</h4>
-                                <p class="text-slate-500 text-xs font-medium">${item.price} ج.م (${item.type}) × ${item.qty}</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center space-x-2 space-x-reverse">
-                            <button onclick="changeQty('${item.id}', 1)" class="bg-slate-100 hover:bg-slate-200 w-7 h-7 rounded-lg font-bold flex items-center justify-center text-slate-700">+</button>
-                            <span class="text-sm font-black w-6 text-center text-slate-900">${item.qty}</span>
-                            <button onclick="changeQty('${item.id}', -1)" class="bg-slate-100 hover:bg-slate-200 w-7 h-7 rounded-lg font-bold flex items-center justify-center text-slate-700">-</button>
-                        </div>
-                    </div>
-                `;
-            });
-            const totalEl = document.getElementById('cart-total');
-            if (totalEl) totalEl.innerText = total + ' ج.م';
-        }
-
-        function changeQty(id, delta) {
-            const item = cart.find(i => i.id === id);
-            if (item) {
-                item.qty += delta;
-                if (item.qty <= 0) {
-                    cart = cart.filter(i => i.id !== id);
-                }
-                updateCartUI();
-            }
-        }
-
-        function toggleCart() {
-            const modal = document.getElementById('cart-modal');
-            if (modal) modal.classList.toggle('hidden');
-        }
-
-        function openCheckoutModal() {
-            if (cart.length === 0) {
-                alert('السلة فارغة!');
-                return;
-            }
-            toggleCart();
-            const checkoutModal = document.getElementById('checkout-modal');
-            if (checkoutModal) checkoutModal.classList.remove('hidden');
-        }
-
-        function closeCheckoutModal() {
-            const checkoutModal = document.getElementById('checkout-modal');
-            if (checkoutModal) checkoutModal.classList.add('hidden');
-        }
-
-        function submitOrder(e) {
-            e.preventDefault();
-            const nameEl = document.getElementById('cust-name');
-            const phoneEl = document.getElementById('cust-phone');
-            const addressEl = document.getElementById('cust-address');
-            const notesEl = document.getElementById('cust-notes');
-
-            if (!nameEl || !phoneEl || !addressEl) return;
-
-            const name = nameEl.value.trim();
-            const phone = phoneEl.value.trim();
-            const address = addressEl.value.trim();
-            const notes = notesEl ? notesEl.value.trim() : '';
-
-            let total = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
-
-            const newOrder = {
-                id: 'ORD-' + Math.floor(1000 + Math.random() * 9000),
-                date: new Date().toLocaleString
+            <div class="flex justify-end space-x-2 space-
