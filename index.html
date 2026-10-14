@@ -183,13 +183,13 @@
                 <div class="overflow-x-auto"><table class="w-full text-right"><tbody id="admin-orders-body"></tbody></table></div>
             </div>
 
-            <!-- إضافة قسم جديد مع رفع صوره من الجهاز -->
+            <!-- إضافة قسم جديد -->
             <div class="bg-white p-6 rounded-3xl shadow-xl">
                 <h3 class="text-lg font-black mb-4">إضافة قسم جديد</h3>
                 <form id="add-category-form" class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
                     <div>
                         <label class="block text-sm font-bold mb-1">اسم القسم *</label>
-                        <input type="text" id="c-name" required class="w-full border p-2.5 rounded-xl bg-slate-50" placeholder="مثال: شوكولاتة وشبس">
+                        <input type="text" id="c-name" required class="w-full border p-2.5 rounded-xl bg-slate-50" placeholder="مثال: شوكولاتة وشيبسي">
                     </div>
                     <div>
                         <label class="block text-sm font-bold mb-1">صورة القسم من الجهاز *</label>
@@ -246,7 +246,7 @@
         </div>
     </div>
 
-    <!-- الجافاسكربت -->
+    <!-- الجافاسكربت المحسن والمستقر سحابياً -->
     <script>
         const firebaseConfig = {
             databaseURL: "https://abu-islam-store-default-rtdb.firebaseio.com/"
@@ -256,33 +256,39 @@
 
         const DEFAULT_IMG = "https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=400&q=80";
 
-        let categories = [
-            { name: 'شيبسي وسناكس', image: 'https://images.unsplash.com/photo-1566478989037-eec170784d0b?auto=format&fit=crop&w=600&q=80' },
-            { name: 'بسكوت وحلويات', image: 'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?auto=format&fit=crop&w=600&q=80' }
-        ];
-
-        let products = [
-            { id: '1', category: 'شيبسي وسناكس', name: 'كرتونة شيبسي مشكل', type: 'كرتونة', price: 1500, image: DEFAULT_IMG },
-            { id: '2', category: 'بسكوت وحلويات', name: 'دستة بسكوت أوريو', type: 'دستة', price: 120, image: DEFAULT_IMG }
-        ];
-
+        let categories = [];
+        let products = [];
         let orders = [];
         let cart = [];
-        let activeCategory = 'شيبسي وسناكس';
+        let activeCategory = '';
 
+        // استماع سحابي مستقر ومحدث فورياً
         function initCloudSync() {
             db.ref('categories').on('value', (snapshot) => {
                 const data = snapshot.val();
-                if (data) { 
-                    categories = data; 
-                    renderCategories(); 
-                    renderAdminCategoryList();
+                if (data) {
+                    categories = Object.keys(data).map(key => ({ ...data[key], firebaseKey: key }));
+                } else {
+                    // بيانات افتراضية لو القاعدة فارغة لأول مرة
+                    categories = [
+                        { firebaseKey: 'c1', name: 'شيبسي وسناكس', image: 'https://images.unsplash.com/photo-1566478989037-eec170784d0b?auto=format&fit=crop&w=600&q=80' },
+                        { firebaseKey: 'c2', name: 'بسكوت وحلويات', image: 'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?auto=format&fit=crop&w=600&q=80' }
+                    ];
+                    db.ref('categories').set(categories);
                 }
+                renderCategories();
+                renderAdminCategoryList();
             });
 
             db.ref('products').on('value', (snapshot) => {
                 const data = snapshot.val();
-                if (data) { products = data; renderProducts(); renderAdminTable(); }
+                if (data) {
+                    products = Object.keys(data).map(key => ({ ...data[key], firebaseKey: key }));
+                } else {
+                    products = [];
+                }
+                renderProducts();
+                renderAdminTable();
             });
 
             db.ref('orders').on('value', (snapshot) => {
@@ -296,11 +302,6 @@
             });
         }
 
-        function saveDataToCloud() {
-            db.ref('categories').set(categories);
-            db.ref('products').set(products);
-        }
-
         function renderCategories() {
             const tabs = document.getElementById('categories-tabs');
             if (!tabs) return;
@@ -310,17 +311,20 @@
             }
 
             tabs.innerHTML = categories.map(c => `
-                <button type="button" onclick="selectCategory('${c.name}')" class="px-5 py-2.5 rounded-2xl font-bold cursor-pointer ${c.name === activeCategory ? 'bg-emerald-700 text-white' : 'bg-white border text-slate-700'}">${c.name}</button>
+                <button type="button" onclick="selectCategory('${c.name}')" class="px-5 py-2.5 rounded-2xl font-bold cursor-pointer ${c.name === activeCategory ? 'bg-emerald-700 text-white shadow-lg' : 'bg-white border text-slate-700'}">${c.name}</button>
             `).join('');
 
             const activeObj = categories.find(c => c.name === activeCategory) || categories[0];
-            if (activeObj) {
+            const bannerContainer = document.getElementById('active-category-banner');
+            if (activeObj && bannerContainer) {
                 document.getElementById('banner-title').innerText = activeObj.name;
                 document.getElementById('banner-image-container').innerHTML = `<img src="${activeObj.image || DEFAULT_IMG}" onerror="this.src='${DEFAULT_IMG}'" class="w-full h-full object-cover">`;
             }
 
             const select = document.getElementById('p-category');
-            if (select) select.innerHTML = categories.map(c => `<option value="${c.name}">${c.name}</option>`).join('');
+            if (select) {
+                select.innerHTML = categories.map(c => `<option value="${c.name}">${c.name}</option>`).join('');
+            }
         }
 
         function renderAdminCategoryList() {
@@ -332,7 +336,7 @@
                         <img src="${c.image || DEFAULT_IMG}" onerror="this.src='${DEFAULT_IMG}'" class="w-8 h-8 object-cover rounded-lg">
                         <span class="font-bold text-sm">${c.name}</span>
                     </div>
-                    <button type="button" onclick="deleteCategory('${c.name}')" class="bg-red-500 text-white px-2 py-1 rounded text-xs cursor-pointer">حذف</button>
+                    <button type="button" onclick="deleteCategory('${c.firebaseKey}', '${c.name}')" class="bg-red-500 text-white px-2 py-1 rounded text-xs cursor-pointer">حذف</button>
                 </div>
             `).join('');
         }
@@ -343,17 +347,19 @@
             renderProducts();
         }
 
-        function deleteCategory(catName) {
+        function deleteCategory(firebaseKey, catName) {
             if (categories.length <= 1) {
                 alert("يجب أن يتبقى قسم واحد على الأقل.");
                 return;
             }
-            if (confirm(`هل أنت متأكد من حذف قسم "${catName}" وكل منتجاته؟`)) {
-                categories = categories.filter(c => c.name !== catName);
-                products = products.filter(p => p.category !== catName);
-                saveDataToCloud();
-                renderCategories();
-                renderProducts();
+            if (confirm(`هل أنت متأكد من حذف قسم "${catName}"؟`)) {
+                db.ref('categories/' + firebaseKey).remove();
+                // حذف المنتجات التابعة للقسم أيضاً
+                products.forEach(p => {
+                    if (p.category === catName) {
+                        db.ref('products/' + p.firebaseKey).remove();
+                    }
+                });
             }
         }
 
@@ -369,15 +375,15 @@
                     </td>
                     <td class="p-4">${p.type}</td>
                     <td class="p-4 font-bold text-emerald-600">${p.price} ج.م</td>
-                    <td class="p-4 text-center"><button type="button" onclick="addToCart('${p.id}')" class="bg-slate-900 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl text-sm font-bold cursor-pointer transition">إضافة للسلة</button></td>
+                    <td class="p-4 text-center"><button type="button" onclick="addToCart('${p.firebaseKey}')" class="bg-slate-900 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl text-sm font-bold cursor-pointer transition">إضافة للسلة</button></td>
                 </tr>
             `).join('');
         }
 
-        function addToCart(id) {
-            const item = products.find(p => p.id === id);
+        function addToCart(firebaseKey) {
+            const item = products.find(p => p.firebaseKey === firebaseKey);
             if (!item) return;
-            const inCart = cart.find(c => c.id === id);
+            const inCart = cart.find(c => c.firebaseKey === firebaseKey);
             if (inCart) inCart.qty++; else cart.push({ ...item, qty: 1 });
             updateCartUI();
             document.getElementById('cart-modal').classList.add('show');
@@ -394,20 +400,20 @@
                         <div><div class="font-bold text-sm">${i.name}</div><div class="text-xs text-slate-500">${i.price} ج.م × ${i.qty}</div></div>
                     </div>
                     <div class="flex items-center gap-1">
-                        <button type="button" onclick="changeQty('${i.id}', 1)" class="bg-slate-100 px-2 py-0.5 rounded font-bold">+</button>
+                        <button type="button" onclick="changeQty('${i.firebaseKey}', 1)" class="bg-slate-100 px-2 py-0.5 rounded font-bold">+</button>
                         <span class="text-sm font-bold px-1">${i.qty}</span>
-                        <button type="button" onclick="changeQty('${i.id}', -1)" class="bg-slate-100 px-2 py-0.5 rounded font-bold">-</button>
+                        <button type="button" onclick="changeQty('${i.firebaseKey}', -1)" class="bg-slate-100 px-2 py-0.5 rounded font-bold">-</button>
                     </div>
                 </div>
             `).join('');
             document.getElementById('cart-total').innerText = cart.reduce((s, i) => s + (i.price * i.qty), 0) + ' ج.م';
         }
 
-        function changeQty(id, delta) {
-            const item = cart.find(c => c.id === id);
+        function changeQty(firebaseKey, delta) {
+            const item = cart.find(c => c.firebaseKey === firebaseKey);
             if (item) {
                 item.qty += delta;
-                if (item.qty <= 0) cart = cart.filter(c => c.id !== id);
+                if (item.qty <= 0) cart = cart.filter(c => c.firebaseKey !== firebaseKey);
                 updateCartUI();
             }
         }
@@ -415,17 +421,14 @@
         function renderAdminTable() {
             const tbody = document.getElementById('admin-table-body');
             if (!tbody) return;
-            tbody.innerHTML = products.map(p => `
-                <tr class="border-b"><td class="p-2"><img src="${p.image || DEFAULT_IMG}" onerror="this.src='${DEFAULT_IMG}'" class="w-10 h-10 object-cover rounded"></td><td class="p-2 font-bold">${p.name}</td><td class="p-2">${p.price} ج.م</td><td class="p-2"><button type="button" onclick="deleteProduct('${p.id}')" class="bg-red-500 text-white px-2 py-1 rounded text-xs">حذف</button></td></tr>
+            tbody.innerHTML = products.length === 0 ? `<tr><td colspan="4" class="p-4 text-center text-slate-400">لا توجد أصناف مضافة</td></tr>` : products.map(p => `
+                <tr class="border-b"><td class="p-2"><img src="${p.image || DEFAULT_IMG}" onerror="this.src='${DEFAULT_IMG}'" class="w-10 h-10 object-cover rounded"></td><td class="p-2 font-bold">${p.name}</td><td class="p-2">${p.price} ج.م</td><td class="p-2"><button type="button" onclick="deleteProduct('${p.firebaseKey}')" class="bg-red-500 text-white px-2 py-1 rounded text-xs cursor-pointer">حذف</button></td></tr>
             `).join('');
         }
 
-        function deleteProduct(id) {
+        function deleteProduct(firebaseKey) {
             if (confirm("هل تريد حذف هذا الصنف؟")) {
-                products = products.filter(p => p.id !== id);
-                saveDataToCloud();
-                renderProducts();
-                renderAdminTable();
+                db.ref('products/' + firebaseKey).remove();
             }
         }
 
@@ -434,7 +437,7 @@
             const tbody = document.getElementById('admin-orders-body');
             if (!tbody) return;
             tbody.innerHTML = orders.length === 0 ? `<tr><td class="p-4 text-center text-slate-400">لا توجد طلبات جديدة</td></tr>` : orders.map(o => `
-                <tr class="border-b"><td class="p-2 font-bold">${o.customer.name}<br><span class="text-xs text-slate-500">${o.customer.phone} - ${o.customer.address}</span></td><td class="p-2 font-bold text-emerald-600">${o.total} ج.م</td><td class="p-2"><button type="button" onclick="deleteOrder('${o.firebaseId}')" class="bg-green-600 text-white px-2 py-1 rounded text-xs">تم التسليم</button></td></tr>
+                <tr class="border-b"><td class="p-2 font-bold">${o.customer.name}<br><span class="text-xs text-slate-500">${o.customer.phone} - ${o.customer.address}</span></td><td class="p-2 font-bold text-emerald-600">${o.total} ج.م</td><td class="p-2"><button type="button" onclick="deleteOrder('${o.firebaseId}')" class="bg-green-600 text-white px-2 py-1 rounded text-xs cursor-pointer">تم التسليم</button></td></tr>
             `).join('');
         }
 
@@ -446,9 +449,6 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             initCloudSync();
-            renderCategories();
-            renderProducts();
-            updateCartUI();
 
             document.getElementById('cart-btn').onclick = () => document.getElementById('cart-modal').classList.add('show');
             document.getElementById('close-cart-btn').onclick = () => document.getElementById('cart-modal').classList.remove('show');
@@ -476,7 +476,7 @@
 
                 db.ref('orders').push(newOrder, (error) => {
                     if (error) {
-                        alert("حدث خطأ أثناء إرسال الطلب، تأكد من الاتصال بالإنترنت.");
+                        alert("حدث خطأ أثناء إرسال الطلب.");
                     } else {
                         cart = [];
                         updateCartUI();
@@ -494,13 +494,10 @@
                 if (document.getElementById('admin-pass').value === '1234') {
                     document.getElementById('admin-login-modal').classList.remove('show');
                     document.getElementById('admin-dashboard').classList.add('show');
-                    renderAdminCategoryList();
-                    renderAdminTable();
-                    renderAdminOrders();
                 } else alert("كلمة المرور غير صحيحة!");
             };
 
-            // إضافة قسم جديد مع رفع صورته من الجهاز
+            // إضافة قسم جديد بـ push سحابي مباشر
             document.getElementById('add-category-form').onsubmit = (e) => {
                 e.preventDefault();
                 const name = document.getElementById('c-name').value.trim();
@@ -512,52 +509,53 @@
                     return;
                 }
 
-                const createCat = (imgUrl) => {
-                    categories.push({ name: name, image: imgUrl });
-                    saveDataToCloud();
-                    renderCategories();
-                    renderAdminCategoryList();
-                    document.getElementById('add-category-form').reset();
-                    alert("تمت إضافة القسم وصورته بنجاح!");
+                const saveToCloud = (imgUrl) => {
+                    db.ref('categories').push({ name: name, image: imgUrl }, (err) => {
+                        if (!err) {
+                            document.getElementById('add-category-form').reset();
+                            alert("تمت إضافة القسم وحفظه سحابياً بنجاح!");
+                        }
+                    });
                 };
 
                 if (file) {
                     const reader = new FileReader();
-                    reader.onload = (evt) => createCat(evt.target.result);
+                    reader.onload = (evt) => saveToCloud(evt.target.result);
                     reader.readAsDataURL(file);
                 } else {
-                    createCat(DEFAULT_IMG);
+                    saveToCloud(DEFAULT_IMG);
                 }
             };
 
-            // إضافة صنف جديد
+            // إضافة صنف جديد بـ push سحابي مباشر
             document.getElementById('add-product-form').onsubmit = (e) => {
                 e.preventDefault();
                 const fileInput = document.getElementById('p-image');
                 const file = fileInput.files[0];
 
-                const createProd = (imgUrl) => {
-                    products.push({
-                        id: 'p_' + Date.now(),
+                const saveToCloud = (imgUrl) => {
+                    const newProd = {
                         category: document.getElementById('p-category').value,
-                        name: document.getElementById('p-name').value,
+                        name: document.getElementById('p-name').value.trim(),
                         type: document.getElementById('p-type').value,
                         price: parseFloat(document.getElementById('p-price').value),
                         image: imgUrl
+                    };
+
+                    db.ref('products').push(newProd, (err) => {
+                        if (!err) {
+                            document.getElementById('add-product-form').reset();
+                            alert("تمت إضافة الصنف وحفظه سحابياً بنجاح!");
+                        }
                     });
-                    saveDataToCloud();
-                    renderProducts();
-                    renderAdminTable();
-                    document.getElementById('add-product-form').reset();
-                    alert("تمت إضافة الصنف وحفظه سحابياً بنجاح!");
                 };
 
                 if (file) {
                     const reader = new FileReader();
-                    reader.onload = (evt) => createProd(evt.target.result);
+                    reader.onload = (evt) => saveToCloud(evt.target.result);
                     reader.readAsDataURL(file);
                 } else {
-                    createProd(DEFAULT_IMG);
+                    saveToCloud(DEFAULT_IMG);
                 }
             };
         });
