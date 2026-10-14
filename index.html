@@ -131,13 +131,22 @@
                 <h3 class="text-xl font-black text-slate-900 flex items-center"><i class="fa-solid fa-cart-shopping text-emerald-600 ml-2"></i>سلة الطلبات</h3>
                 <button type="button" id="close-cart-btn" class="text-slate-400 hover:text-red-500 text-2xl font-bold w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center">✕</button>
             </div>
+            
+            <!-- أزرار التحكم بالسلة (تفريغ السلة) -->
+            <div id="cart-actions-bar" class="mb-3 flex justify-between items-center hidden">
+                <span class="text-xs text-slate-500 font-bold">مراجعة الأصناف والكميات</span>
+                <button type="button" onclick="clearCart()" class="text-red-500 hover:text-red-700 text-xs font-bold bg-red-50 px-2.5 py-1 rounded-lg border border-red-100 transition cursor-pointer">
+                    <i class="fa-solid fa-trash-can ml-1"></i>تفريغ السلة بالكامل
+                </button>
+            </div>
+
             <div id="cart-items" class="flex-grow space-y-4 overflow-y-auto mb-4"></div>
             <div class="border-t pt-4">
                 <div class="flex justify-between items-center mb-4 text-lg font-black">
                     <span>الإجمالي:</span>
                     <span id="cart-total" class="text-emerald-700">0 ج.م</span>
                 </div>
-                <button type="button" id="checkout-btn" class="w-full bg-emerald-600 text-white font-bold py-3.5 rounded-2xl shadow-lg">إتمام وتأكيد الطلب</button>
+                <button type="button" id="checkout-btn" class="w-full bg-emerald-600 text-white font-bold py-3.5 rounded-2xl shadow-lg cursor-pointer">إتمام وتأكيد الطلب</button>
             </div>
         </div>
     </div>
@@ -153,7 +162,7 @@
                 <input type="text" id="cust-name" required class="w-full border p-2.5 rounded-xl bg-slate-50" placeholder="الاسم الكامل *">
                 <input type="tel" id="cust-phone" required class="w-full border p-2.5 rounded-xl bg-slate-50" placeholder="رقم الهاتف *">
                 <textarea id="cust-address" required rows="2" class="w-full border p-2.5 rounded-xl bg-slate-50" placeholder="العنوان بالتفصيل *"></textarea>
-                <button type="submit" class="w-full bg-slate-900 text-white font-bold py-3 rounded-2xl shadow-md">إرسال الطلب الآن</button>
+                <button type="submit" class="w-full bg-slate-900 text-white font-bold py-3 rounded-2xl shadow-md cursor-pointer">إرسال الطلب الآن</button>
             </form>
         </div>
     </div>
@@ -246,7 +255,7 @@
         </div>
     </div>
 
-    <!-- الجافاسكربت المحسن والمستقر سحابياً -->
+    <!-- الجافاسكربت -->
     <script>
         const firebaseConfig = {
             databaseURL: "https://abu-islam-store-default-rtdb.firebaseio.com/"
@@ -262,14 +271,12 @@
         let cart = [];
         let activeCategory = '';
 
-        // استماع سحابي مستقر ومحدث فورياً
         function initCloudSync() {
             db.ref('categories').on('value', (snapshot) => {
                 const data = snapshot.val();
                 if (data) {
                     categories = Object.keys(data).map(key => ({ ...data[key], firebaseKey: key }));
                 } else {
-                    // بيانات افتراضية لو القاعدة فارغة لأول مرة
                     categories = [
                         { firebaseKey: 'c1', name: 'شيبسي وسناكس', image: 'https://images.unsplash.com/photo-1566478989037-eec170784d0b?auto=format&fit=crop&w=600&q=80' },
                         { firebaseKey: 'c2', name: 'بسكوت وحلويات', image: 'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?auto=format&fit=crop&w=600&q=80' }
@@ -354,7 +361,6 @@
             }
             if (confirm(`هل أنت متأكد من حذف قسم "${catName}"؟`)) {
                 db.ref('categories/' + firebaseKey).remove();
-                // حذف المنتجات التابعة للقسم أيضاً
                 products.forEach(p => {
                     if (p.category === catName) {
                         db.ref('products/' + p.firebaseKey).remove();
@@ -390,19 +396,33 @@
         }
 
         function updateCartUI() {
-            document.getElementById('cart-count').innerText = cart.reduce((s, i) => s + i.qty, 0);
+            const totalCount = cart.reduce((s, i) => s + i.qty, 0);
+            document.getElementById('cart-count').innerText = totalCount;
+            
+            const actionsBar = document.getElementById('cart-actions-bar');
+            if (cart.length > 0) {
+                actionsBar.classList.remove('hidden');
+            } else {
+                actionsBar.classList.add('hidden');
+            }
+
             const container = document.getElementById('cart-items');
             if (!container) return;
             container.innerHTML = cart.length === 0 ? `<div class="text-center text-slate-400 py-8">السلة فارغة</div>` : cart.map(i => `
-                <div class="flex justify-between items-center border-b pb-2">
+                <div class="flex justify-between items-center border-b pb-3 gap-2">
                     <div class="flex items-center gap-2">
                         <img src="${i.image || DEFAULT_IMG}" onerror="this.src='${DEFAULT_IMG}'" class="w-10 h-10 object-cover rounded border">
-                        <div><div class="font-bold text-sm">${i.name}</div><div class="text-xs text-slate-500">${i.price} ج.م × ${i.qty}</div></div>
+                        <div>
+                            <div class="font-bold text-sm">${i.name}</div>
+                            <div class="text-xs text-slate-500">${i.price} ج.م (${i.type})</div>
+                        </div>
                     </div>
-                    <div class="flex items-center gap-1">
-                        <button type="button" onclick="changeQty('${i.firebaseKey}', 1)" class="bg-slate-100 px-2 py-0.5 rounded font-bold">+</button>
-                        <span class="text-sm font-bold px-1">${i.qty}</span>
-                        <button type="button" onclick="changeQty('${i.firebaseKey}', -1)" class="bg-slate-100 px-2 py-0.5 rounded font-bold">-</button>
+                    <div class="flex items-center gap-1.5">
+                        <button type="button" onclick="changeQty('${i.firebaseKey}', -1)" class="bg-slate-100 hover:bg-slate-200 w-7 h-7 rounded font-bold flex items-center justify-center cursor-pointer">-</button>
+                        <!-- حقل إدخال مباشر لتحديد الكمية -->
+                        <input type="number" min="1" value="${i.qty}" onchange="setQty('${i.firebaseKey}', this.value)" class="w-12 text-center border rounded font-black text-sm py-0.5 bg-slate-50">
+                        <button type="button" onclick="changeQty('${i.firebaseKey}', 1)" class="bg-slate-100 hover:bg-slate-200 w-7 h-7 rounded font-bold flex items-center justify-center cursor-pointer">+</button>
+                        <button type="button" onclick="removeFromCart('${i.firebaseKey}')" class="text-red-500 hover:text-red-700 px-1 text-xs ml-1"><i class="fa-solid fa-trash"></i></button>
                     </div>
                 </div>
             `).join('');
@@ -413,7 +433,36 @@
             const item = cart.find(c => c.firebaseKey === firebaseKey);
             if (item) {
                 item.qty += delta;
-                if (item.qty <= 0) cart = cart.filter(c => c.firebaseKey !== firebaseKey);
+                if (item.qty <= 0) {
+                    cart = cart.filter(c => c.firebaseKey !== firebaseKey);
+                }
+                updateCartUI();
+            }
+        }
+
+        // تعيين الكمية مباشرة عند كتابتها في المربع
+        function setQty(firebaseKey, val) {
+            const qty = parseInt(val);
+            const item = cart.find(c => c.firebaseKey === firebaseKey);
+            if (item) {
+                if (isNaN(qty) || qty <= 0) {
+                    cart = cart.filter(c => c.firebaseKey !== firebaseKey);
+                } else {
+                    item.qty = qty;
+                }
+                updateCartUI();
+            }
+        }
+
+        function removeFromCart(firebaseKey) {
+            cart = cart.filter(c => c.firebaseKey !== firebaseKey);
+            updateCartUI();
+        }
+
+        // تفريغ السلة بالكامل
+        function clearCart() {
+            if (confirm("هل تريد تفريغ السلة بالكامل؟")) {
+                cart = [];
                 updateCartUI();
             }
         }
@@ -497,7 +546,6 @@
                 } else alert("كلمة المرور غير صحيحة!");
             };
 
-            // إضافة قسم جديد بـ push سحابي مباشر
             document.getElementById('add-category-form').onsubmit = (e) => {
                 e.preventDefault();
                 const name = document.getElementById('c-name').value.trim();
@@ -527,7 +575,6 @@
                 }
             };
 
-            // إضافة صنف جديد بـ push سحابي مباشر
             document.getElementById('add-product-form').onsubmit = (e) => {
                 e.preventDefault();
                 const fileInput = document.getElementById('p-image');
