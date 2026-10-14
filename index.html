@@ -177,25 +177,68 @@
             <button type="button" id="close-admin-dashboard-btn" class="bg-red-600 text-white px-4 py-2 rounded-xl text-sm font-bold">إغلاق</button>
         </div>
         <div class="container mx-auto px-4 py-8 space-y-8">
+            <!-- طلبات العملاء الواردة -->
             <div class="bg-white p-6 rounded-3xl shadow-xl">
                 <h3 class="text-lg font-black mb-4">طلبات العملاء الواردة (<span id="orders-badge">0</span>)</h3>
                 <div class="overflow-x-auto"><table class="w-full text-right"><tbody id="admin-orders-body"></tbody></table></div>
             </div>
+
+            <!-- إضافة قسم جديد مع رفع صوره من الجهاز -->
+            <div class="bg-white p-6 rounded-3xl shadow-xl">
+                <h3 class="text-lg font-black mb-4">إضافة قسم جديد</h3>
+                <form id="add-category-form" class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+                    <div>
+                        <label class="block text-sm font-bold mb-1">اسم القسم *</label>
+                        <input type="text" id="c-name" required class="w-full border p-2.5 rounded-xl bg-slate-50" placeholder="مثال: شوكولاتة وشبس">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold mb-1">صورة القسم من الجهاز *</label>
+                        <input type="file" id="c-image" accept="image/*" class="w-full border p-2 rounded-xl bg-slate-50 text-sm">
+                    </div>
+                    <div>
+                        <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-xl cursor-pointer">حفظ القسم سحابياً</button>
+                    </div>
+                </form>
+
+                <h4 class="font-bold text-sm text-slate-700 mt-6 mb-3">الأقسام الحالية:</h4>
+                <div id="admin-categories-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3"></div>
+            </div>
+
+            <!-- إضافة صنف جديد -->
             <div class="bg-white p-6 rounded-3xl shadow-xl">
                 <h3 class="text-lg font-black mb-4">إضافة صنف جديد</h3>
                 <form id="add-product-form" class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <select id="p-category" required class="border p-2.5 rounded-xl bg-slate-50"></select>
-                    <input type="text" id="p-name" required class="border p-2.5 rounded-xl bg-slate-50" placeholder="اسم الصنف">
-                    <input type="file" id="p-image" accept="image/*" class="border p-2 rounded-xl bg-slate-50 text-sm">
-                    <select id="p-type" class="border p-2.5 rounded-xl bg-slate-50">
-                        <option value="كرتونة">كرتونة</option>
-                        <option value="قطعة">قطعة</option>
-                        <option value="دستة">دستة</option>
-                    </select>
-                    <input type="number" id="p-price" required class="border p-2.5 rounded-xl bg-slate-50" placeholder="السعر">
-                    <button type="submit" class="bg-slate-900 text-white font-bold py-2.5 rounded-xl">حفظ الصنف</button>
+                    <div>
+                        <label class="block text-sm font-bold mb-1">القسم</label>
+                        <select id="p-category" required class="w-full border p-2.5 rounded-xl bg-slate-50"></select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold mb-1">اسم الصنف</label>
+                        <input type="text" id="p-name" required class="w-full border p-2.5 rounded-xl bg-slate-50" placeholder="اسم الصنف">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold mb-1">صورة الصنف</label>
+                        <input type="file" id="p-image" accept="image/*" class="w-full border p-2 rounded-xl bg-slate-50 text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold mb-1">طريقة البيع</label>
+                        <select id="p-type" class="w-full border p-2.5 rounded-xl bg-slate-50">
+                            <option value="كرتونة">كرتونة</option>
+                            <option value="قطعة">قطعة</option>
+                            <option value="دستة">دستة</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold mb-1">السعر (ج.م)</label>
+                        <input type="number" id="p-price" required class="w-full border p-2.5 rounded-xl bg-slate-50" placeholder="السعر">
+                    </div>
+                    <div class="flex items-end">
+                        <button type="submit" class="w-full bg-slate-900 text-white font-bold py-2.5 rounded-xl cursor-pointer">حفظ الصنف</button>
+                    </div>
                 </form>
             </div>
+
+            <!-- جدول الأصناف -->
             <div class="bg-white p-6 rounded-3xl shadow-xl">
                 <h3 class="text-lg font-black mb-4">الأصناف المضافة</h3>
                 <div class="overflow-x-auto"><table class="w-full text-right"><tbody id="admin-table-body"></tbody></table></div>
@@ -203,9 +246,8 @@
         </div>
     </div>
 
-    <!-- كود الجافاسكربت -->
+    <!-- الجافاسكربت -->
     <script>
-        // إعدادات اتصال السحابة المربوطة بقاعدة بياناتك الخاصة
         const firebaseConfig = {
             databaseURL: "https://abu-islam-store-default-rtdb.firebaseio.com/"
         };
@@ -231,7 +273,11 @@
         function initCloudSync() {
             db.ref('categories').on('value', (snapshot) => {
                 const data = snapshot.val();
-                if (data) { categories = data; renderCategories(); }
+                if (data) { 
+                    categories = data; 
+                    renderCategories(); 
+                    renderAdminCategoryList();
+                }
             });
 
             db.ref('products').on('value', (snapshot) => {
@@ -258,6 +304,11 @@
         function renderCategories() {
             const tabs = document.getElementById('categories-tabs');
             if (!tabs) return;
+
+            if (!categories.some(c => c.name === activeCategory) && categories.length > 0) {
+                activeCategory = categories[0].name;
+            }
+
             tabs.innerHTML = categories.map(c => `
                 <button type="button" onclick="selectCategory('${c.name}')" class="px-5 py-2.5 rounded-2xl font-bold cursor-pointer ${c.name === activeCategory ? 'bg-emerald-700 text-white' : 'bg-white border text-slate-700'}">${c.name}</button>
             `).join('');
@@ -272,10 +323,38 @@
             if (select) select.innerHTML = categories.map(c => `<option value="${c.name}">${c.name}</option>`).join('');
         }
 
+        function renderAdminCategoryList() {
+            const container = document.getElementById('admin-categories-list');
+            if (!container) return;
+            container.innerHTML = categories.map(c => `
+                <div class="flex items-center justify-between bg-slate-50 p-2.5 rounded-xl border">
+                    <div class="flex items-center gap-2">
+                        <img src="${c.image || DEFAULT_IMG}" onerror="this.src='${DEFAULT_IMG}'" class="w-8 h-8 object-cover rounded-lg">
+                        <span class="font-bold text-sm">${c.name}</span>
+                    </div>
+                    <button type="button" onclick="deleteCategory('${c.name}')" class="bg-red-500 text-white px-2 py-1 rounded text-xs cursor-pointer">حذف</button>
+                </div>
+            `).join('');
+        }
+
         function selectCategory(name) {
             activeCategory = name;
             renderCategories();
             renderProducts();
+        }
+
+        function deleteCategory(catName) {
+            if (categories.length <= 1) {
+                alert("يجب أن يتبقى قسم واحد على الأقل.");
+                return;
+            }
+            if (confirm(`هل أنت متأكد من حذف قسم "${catName}" وكل منتجاته؟`)) {
+                categories = categories.filter(c => c.name !== catName);
+                products = products.filter(p => p.category !== catName);
+                saveDataToCloud();
+                renderCategories();
+                renderProducts();
+            }
         }
 
         function renderProducts() {
@@ -415,11 +494,43 @@
                 if (document.getElementById('admin-pass').value === '1234') {
                     document.getElementById('admin-login-modal').classList.remove('show');
                     document.getElementById('admin-dashboard').classList.add('show');
+                    renderAdminCategoryList();
                     renderAdminTable();
                     renderAdminOrders();
                 } else alert("كلمة المرور غير صحيحة!");
             };
 
+            // إضافة قسم جديد مع رفع صورته من الجهاز
+            document.getElementById('add-category-form').onsubmit = (e) => {
+                e.preventDefault();
+                const name = document.getElementById('c-name').value.trim();
+                const fileInput = document.getElementById('c-image');
+                const file = fileInput.files[0];
+
+                if (categories.some(c => c.name === name)) {
+                    alert("هذا القسم موجود بالفعل.");
+                    return;
+                }
+
+                const createCat = (imgUrl) => {
+                    categories.push({ name: name, image: imgUrl });
+                    saveDataToCloud();
+                    renderCategories();
+                    renderAdminCategoryList();
+                    document.getElementById('add-category-form').reset();
+                    alert("تمت إضافة القسم وصورته بنجاح!");
+                };
+
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (evt) => createCat(evt.target.result);
+                    reader.readAsDataURL(file);
+                } else {
+                    createCat(DEFAULT_IMG);
+                }
+            };
+
+            // إضافة صنف جديد
             document.getElementById('add-product-form').onsubmit = (e) => {
                 e.preventDefault();
                 const fileInput = document.getElementById('p-image');
