@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -10,13 +10,13 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Font Cairo -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Cairo', sans-serif;
-            background-color: #f8fafc;
-        }
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
-        /* النوافذ المنبثقة */
+    <style>
+        body { font-family: 'Cairo', sans-serif; background-color: #f8fafc; }
         .app-modal {
             display: none;
             position: fixed;
@@ -25,12 +25,7 @@
             background-color: rgba(15, 23, 42, 0.65);
             backdrop-filter: blur(4px);
         }
-
-            .app-modal.show {
-                display: flex !important;
-            }
-
-        /* فوتر المصمم */
+        .app-modal.show { display: flex !important; }
         .ay-credit {
             text-align: center;
             padding: 14px;
@@ -41,20 +36,8 @@
             border-top: 1px solid #e2e8f0;
             direction: ltr;
         }
-
-            .ay-credit button {
-                border: none;
-                background: none;
-                color: #2563eb;
-                font-weight: 700;
-                cursor: pointer;
-            }
-
-        .ay-phone a {
-            color: #2563eb;
-            text-decoration: none;
-            font-weight: 600;
-        }
+        .ay-credit button { border: none; background: none; color: #2563eb; font-weight: 700; cursor: pointer; }
+        .ay-phone a { color: #2563eb; text-decoration: none; font-weight: 600; }
     </style>
 </head>
 <body class="flex flex-col min-h-screen">
@@ -220,246 +203,253 @@
         </div>
     </div>
 
-    <!-- كود الجافاسكربت المعالج والمحمي -->
+    <!-- كود الجافاسكربت -->
     <script>
-                const DEFAULT_IMG = "https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=400&q=80";
+        // إعدادات اتصال السحابة المربوطة بقاعدة بياناتك الخاصة
+        const firebaseConfig = {
+            databaseURL: "https://abu-islam-store-default-rtdb.firebaseio.com/"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
 
-                // بيانات أساسية
-                let categories = [
-                    { name: 'شيبسي وسناكس', image: 'https://images.unsplash.com/photo-1566478989037-eec170784d0b?auto=format&fit=crop&w=600&q=80' },
-                    { name: 'بسكوت وحلويات', image: 'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?auto=format&fit=crop&w=600&q=80' }
-                ];
+        const DEFAULT_IMG = "https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=400&q=80";
 
-                let products = [
-                    { id: '1', category: 'شيبسي وسناكس', name: 'كرتونة شيبسي مشكل', type: 'كرتونة', price: 1500, image: DEFAULT_IMG },
-                    { id: '2', category: 'بسكوت وحلويات', name: 'دستة بسكوت أوريو', type: 'دستة', price: 120, image: DEFAULT_IMG }
-                ];
+        let categories = [
+            { name: 'شيبسي وسناكس', image: 'https://images.unsplash.com/photo-1566478989037-eec170784d0b?auto=format&fit=crop&w=600&q=80' },
+            { name: 'بسكوت وحلويات', image: 'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?auto=format&fit=crop&w=600&q=80' }
+        ];
 
-                let orders = [];
-                let cart = [];
-                let activeCategory = 'شيبسي وسناكس';
+        let products = [
+            { id: '1', category: 'شيبسي وسناكس', name: 'كرتونة شيبسي مشكل', type: 'كرتونة', price: 1500, image: DEFAULT_IMG },
+            { id: '2', category: 'بسكوت وحلويات', name: 'دستة بسكوت أوريو', type: 'دستة', price: 120, image: DEFAULT_IMG }
+        ];
 
-                // الحفظ الآمن للتخزين المحلي
-                function loadData() {
-                    try {
-                        const c = localStorage.getItem('abuislam_cats');
-                        const p = localStorage.getItem('abuislam_prods');
-                        const o = localStorage.getItem('abuislam_orders');
-                        if (c) categories = JSON.parse(c);
-                        if (p) products = JSON.parse(p);
-                        if (o) orders = JSON.parse(o);
-                    } catch (e) {
-                        console.error("Local storage reset due to size limit", e);
-                    }
+        let orders = [];
+        let cart = [];
+        let activeCategory = 'شيبسي وسناكس';
+
+        function initCloudSync() {
+            db.ref('categories').on('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data) { categories = data; renderCategories(); }
+            });
+
+            db.ref('products').on('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data) { products = data; renderProducts(); renderAdminTable(); }
+            });
+
+            db.ref('orders').on('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    orders = Object.keys(data).map(key => ({ ...data[key], firebaseId: key }));
+                } else {
+                    orders = [];
                 }
+                renderAdminOrders();
+            });
+        }
 
-                function saveData() {
-                    try {
-                        localStorage.setItem('abuislam_cats', JSON.stringify(categories));
-                        localStorage.setItem('abuislam_prods', JSON.stringify(products));
-                        localStorage.setItem('abuislam_orders', JSON.stringify(orders));
-                    } catch (e) {
-                        alert("مساحة التخزين في متصفحك ممتلئة. يرجى حذف بعض الأصناف القديمة أو تقليل حجم الصور.");
-                    }
-                }
+        function saveDataToCloud() {
+            db.ref('categories').set(categories);
+            db.ref('products').set(products);
+        }
 
-                // عرض الأقسام والمنتجات
-                function renderCategories() {
-                    const tabs = document.getElementById('categories-tabs');
-                    if (!tabs) return;
-                    tabs.innerHTML = categories.map(c => `
-                        <button type="button" onclick="selectCategory('${c.name}')" class="px-5 py-2.5 rounded-2xl font-bold cursor-pointer ${c.name === activeCategory ? 'bg-emerald-700 text-white' : 'bg-white border text-slate-700'}">${c.name}</button>
-                    `).join('');
+        function renderCategories() {
+            const tabs = document.getElementById('categories-tabs');
+            if (!tabs) return;
+            tabs.innerHTML = categories.map(c => `
+                <button type="button" onclick="selectCategory('${c.name}')" class="px-5 py-2.5 rounded-2xl font-bold cursor-pointer ${c.name === activeCategory ? 'bg-emerald-700 text-white' : 'bg-white border text-slate-700'}">${c.name}</button>
+            `).join('');
 
-                    const activeObj = categories.find(c => c.name === activeCategory) || categories[0];
-                    if (activeObj) {
-                        document.getElementById('banner-title').innerText = activeObj.name;
-                        document.getElementById('banner-image-container').innerHTML = `<img src="${activeObj.image || DEFAULT_IMG}" onerror="this.src='${DEFAULT_IMG}'" class="w-full h-full object-cover">`;
-                    }
+            const activeObj = categories.find(c => c.name === activeCategory) || categories[0];
+            if (activeObj) {
+                document.getElementById('banner-title').innerText = activeObj.name;
+                document.getElementById('banner-image-container').innerHTML = `<img src="${activeObj.image || DEFAULT_IMG}" onerror="this.src='${DEFAULT_IMG}'" class="w-full h-full object-cover">`;
+            }
 
-                    const select = document.getElementById('p-category');
-                    if (select) select.innerHTML = categories.map(c => `<option value="${c.name}">${c.name}</option>`).join('');
-                }
+            const select = document.getElementById('p-category');
+            if (select) select.innerHTML = categories.map(c => `<option value="${c.name}">${c.name}</option>`).join('');
+        }
 
-                function selectCategory(name) {
-                    activeCategory = name;
-                    renderCategories();
-                    renderProducts();
-                }
+        function selectCategory(name) {
+            activeCategory = name;
+            renderCategories();
+            renderProducts();
+        }
 
-                function renderProducts() {
-                    const tbody = document.getElementById('products-table-body');
-                    if (!tbody) return;
-                    const list = products.filter(p => p.category === activeCategory);
-                    tbody.innerHTML = list.length === 0 ? `<tr><td colspan="4" class="p-6 text-center text-slate-400">لا توجد منتجات في هذا القسم</td></tr>` : list.map(p => `
-                        <tr class="border-b hover:bg-slate-50">
-                            <td class="p-4 flex items-center gap-3">
-                                <img src="${p.image || DEFAULT_IMG}" onerror="this.src='${DEFAULT_IMG}'" class="w-12 h-12 object-cover rounded-xl border">
-                                <span class="font-bold text-slate-900">${p.name}</span>
-                            </td>
-                            <td class="p-4">${p.type}</td>
-                            <td class="p-4 font-bold text-emerald-600">${p.price} ج.م</td>
-                            <td class="p-4 text-center"><button type="button" onclick="addToCart('${p.id}')" class="bg-slate-900 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl text-sm font-bold cursor-pointer transition">إضافة للسلة</button></td>
-                        </tr>
-                    `).join('');
-                }
+        function renderProducts() {
+            const tbody = document.getElementById('products-table-body');
+            if (!tbody) return;
+            const list = products.filter(p => p.category === activeCategory);
+            tbody.innerHTML = list.length === 0 ? `<tr><td colspan="4" class="p-6 text-center text-slate-400">لا توجد منتجات في هذا القسم</td></tr>` : list.map(p => `
+                <tr class="border-b hover:bg-slate-50">
+                    <td class="p-4 flex items-center gap-3">
+                        <img src="${p.image || DEFAULT_IMG}" onerror="this.src='${DEFAULT_IMG}'" class="w-12 h-12 object-cover rounded-xl border">
+                        <span class="font-bold text-slate-900">${p.name}</span>
+                    </td>
+                    <td class="p-4">${p.type}</td>
+                    <td class="p-4 font-bold text-emerald-600">${p.price} ج.م</td>
+                    <td class="p-4 text-center"><button type="button" onclick="addToCart('${p.id}')" class="bg-slate-900 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl text-sm font-bold cursor-pointer transition">إضافة للسلة</button></td>
+                </tr>
+            `).join('');
+        }
 
-                // إدارات السلة
-                function addToCart(id) {
-                    const item = products.find(p => p.id === id);
-                    if (!item) return;
-                    const inCart = cart.find(c => c.id === id);
-                    if (inCart) inCart.qty++; else cart.push({ ...item, qty: 1 });
-                    updateCartUI();
-                    document.getElementById('cart-modal').classList.add('show');
-                }
+        function addToCart(id) {
+            const item = products.find(p => p.id === id);
+            if (!item) return;
+            const inCart = cart.find(c => c.id === id);
+            if (inCart) inCart.qty++; else cart.push({ ...item, qty: 1 });
+            updateCartUI();
+            document.getElementById('cart-modal').classList.add('show');
+        }
 
-                function updateCartUI() {
-                    document.getElementById('cart-count').innerText = cart.reduce((s, i) => s + i.qty, 0);
-                    const container = document.getElementById('cart-items');
-                    if (!container) return;
-                    container.innerHTML = cart.length === 0 ? `<div class="text-center text-slate-400 py-8">السلة فارغة</div>` : cart.map(i => `
-                        <div class="flex justify-between items-center border-b pb-2">
-                            <div class="flex items-center gap-2">
-                                <img src="${i.image || DEFAULT_IMG}" onerror="this.src='${DEFAULT_IMG}'" class="w-10 h-10 object-cover rounded border">
-                                <div><div class="font-bold text-sm">${i.name}</div><div class="text-xs text-slate-500">${i.price} ج.م × ${i.qty}</div></div>
-                            </div>
-                            <div class="flex items-center gap-1">
-                                <button type="button" onclick="changeQty('${i.id}', 1)" class="bg-slate-100 px-2 py-0.5 rounded font-bold">+</button>
-                                <span class="text-sm font-bold px-1">${i.qty}</span>
-                                <button type="button" onclick="changeQty('${i.id}', -1)" class="bg-slate-100 px-2 py-0.5 rounded font-bold">-</button>
-                            </div>
-                        </div>
-                    `).join('');
-                    document.getElementById('cart-total').innerText = cart.reduce((s, i) => s + (i.price * i.qty), 0) + ' ج.م';
-                }
+        function updateCartUI() {
+            document.getElementById('cart-count').innerText = cart.reduce((s, i) => s + i.qty, 0);
+            const container = document.getElementById('cart-items');
+            if (!container) return;
+            container.innerHTML = cart.length === 0 ? `<div class="text-center text-slate-400 py-8">السلة فارغة</div>` : cart.map(i => `
+                <div class="flex justify-between items-center border-b pb-2">
+                    <div class="flex items-center gap-2">
+                        <img src="${i.image || DEFAULT_IMG}" onerror="this.src='${DEFAULT_IMG}'" class="w-10 h-10 object-cover rounded border">
+                        <div><div class="font-bold text-sm">${i.name}</div><div class="text-xs text-slate-500">${i.price} ج.م × ${i.qty}</div></div>
+                    </div>
+                    <div class="flex items-center gap-1">
+                        <button type="button" onclick="changeQty('${i.id}', 1)" class="bg-slate-100 px-2 py-0.5 rounded font-bold">+</button>
+                        <span class="text-sm font-bold px-1">${i.qty}</span>
+                        <button type="button" onclick="changeQty('${i.id}', -1)" class="bg-slate-100 px-2 py-0.5 rounded font-bold">-</button>
+                    </div>
+                </div>
+            `).join('');
+            document.getElementById('cart-total').innerText = cart.reduce((s, i) => s + (i.price * i.qty), 0) + ' ج.م';
+        }
 
-                function changeQty(id, delta) {
-                    const item = cart.find(c => c.id === id);
-                    if (item) {
-                        item.qty += delta;
-                        if (item.qty <= 0) cart = cart.filter(c => c.id !== id);
-                        updateCartUI();
-                    }
-                }
+        function changeQty(id, delta) {
+            const item = cart.find(c => c.id === id);
+            if (item) {
+                item.qty += delta;
+                if (item.qty <= 0) cart = cart.filter(c => c.id !== id);
+                updateCartUI();
+            }
+        }
 
-                // إدارة لوحة التحكم والأصناف
-                function renderAdminTable() {
-                    const tbody = document.getElementById('admin-table-body');
-                    if (!tbody) return;
-                    tbody.innerHTML = products.map(p => `
-                        <tr class="border-b"><td class="p-2"><img src="${p.image || DEFAULT_IMG}" onerror="this.src='${DEFAULT_IMG}'" class="w-10 h-10 object-cover rounded"></td><td class="p-2 font-bold">${p.name}</td><td class="p-2">${p.price} ج.م</td><td class="p-2"><button type="button" onclick="deleteProduct('${p.id}')" class="bg-red-500 text-white px-2 py-1 rounded text-xs">حذف</button></td></tr>
-                    `).join('');
-                }
+        function renderAdminTable() {
+            const tbody = document.getElementById('admin-table-body');
+            if (!tbody) return;
+            tbody.innerHTML = products.map(p => `
+                <tr class="border-b"><td class="p-2"><img src="${p.image || DEFAULT_IMG}" onerror="this.src='${DEFAULT_IMG}'" class="w-10 h-10 object-cover rounded"></td><td class="p-2 font-bold">${p.name}</td><td class="p-2">${p.price} ج.م</td><td class="p-2"><button type="button" onclick="deleteProduct('${p.id}')" class="bg-red-500 text-white px-2 py-1 rounded text-xs">حذف</button></td></tr>
+            `).join('');
+        }
 
-                function deleteProduct(id) {
-                    if (confirm("هل تريد حذف هذا الصنف؟")) {
-                        products = products.filter(p => p.id !== id);
-                        saveData();
-                        renderProducts();
-                        renderAdminTable();
-                    }
-                }
+        function deleteProduct(id) {
+            if (confirm("هل تريد حذف هذا الصنف؟")) {
+                products = products.filter(p => p.id !== id);
+                saveDataToCloud();
+                renderProducts();
+                renderAdminTable();
+            }
+        }
 
-                function renderAdminOrders() {
-                    document.getElementById('orders-badge').innerText = orders.length;
-                    const tbody = document.getElementById('admin-orders-body');
-                    if (!tbody) return;
-                    tbody.innerHTML = orders.length === 0 ? `<tr><td class="p-4 text-center text-slate-400">لا توجد طلبات جديدة</td></tr>` : orders.map(o => `
-                        <tr class="border-b"><td class="p-2 font-bold">${o.customer.name}<br><span class="text-xs text-slate-500">${o.customer.phone} - ${o.customer.address}</span></td><td class="p-2 font-bold text-emerald-600">${o.total} ج.م</td><td class="p-2"><button type="button" onclick="deleteOrder('${o.id}')" class="bg-green-600 text-white px-2 py-1 rounded text-xs">تم التسليم</button></td></tr>
-                    `).join('');
-                }
+        function renderAdminOrders() {
+            document.getElementById('orders-badge').innerText = orders.length;
+            const tbody = document.getElementById('admin-orders-body');
+            if (!tbody) return;
+            tbody.innerHTML = orders.length === 0 ? `<tr><td class="p-4 text-center text-slate-400">لا توجد طلبات جديدة</td></tr>` : orders.map(o => `
+                <tr class="border-b"><td class="p-2 font-bold">${o.customer.name}<br><span class="text-xs text-slate-500">${o.customer.phone} - ${o.customer.address}</span></td><td class="p-2 font-bold text-emerald-600">${o.total} ج.م</td><td class="p-2"><button type="button" onclick="deleteOrder('${o.firebaseId}')" class="bg-green-600 text-white px-2 py-1 rounded text-xs">تم التسليم</button></td></tr>
+            `).join('');
+        }
 
-                function deleteOrder(id) {
-                    orders = orders.filter(o => o.id !== id);
-                    saveData();
-                    renderAdminOrders();
-                }
+        function deleteOrder(firebaseId) {
+            if (firebaseId) {
+                db.ref('orders/' + firebaseId).remove();
+            }
+        }
 
-                // ربط الأحداث المباشر عند تحميل المستند
-                document.addEventListener('DOMContentLoaded', () => {
-                    loadData();
-                    renderCategories();
-                    renderProducts();
-                    updateCartUI();
+        document.addEventListener('DOMContentLoaded', () => {
+            initCloudSync();
+            renderCategories();
+            renderProducts();
+            updateCartUI();
 
-                    // فتح/إغلاق السلة
-                    document.getElementById('cart-btn').onclick = () => document.getElementById('cart-modal').classList.add('show');
-                    document.getElementById('close-cart-btn').onclick = () => document.getElementById('cart-modal').classList.remove('show');
+            document.getElementById('cart-btn').onclick = () => document.getElementById('cart-modal').classList.add('show');
+            document.getElementById('close-cart-btn').onclick = () => document.getElementById('cart-modal').classList.remove('show');
 
-                    // إتمام الطلب
-                    document.getElementById('checkout-btn').onclick = () => {
-                        if (cart.length === 0) return alert("السلة فارغة!");
-                        document.getElementById('cart-modal').classList.remove('show');
-                        document.getElementById('checkout-modal').classList.add('show');
-                    };
-                    document.getElementById('close-checkout-btn').onclick = () => document.getElementById('checkout-modal').classList.remove('show');
+            document.getElementById('checkout-btn').onclick = () => {
+                if (cart.length === 0) return alert("السلة فارغة!");
+                document.getElementById('cart-modal').classList.remove('show');
+                document.getElementById('checkout-modal').classList.add('show');
+            };
+            document.getElementById('close-checkout-btn').onclick = () => document.getElementById('checkout-modal').classList.remove('show');
 
-                    // إرسال الطلب
-                    document.getElementById('order-form').onsubmit = (e) => {
-                        e.preventDefault();
-                        orders.unshift({
-                            id: 'ORD-' + Math.floor(Math.random() * 9000 + 1000),
-                            customer: {
-                                name: document.getElementById('cust-name').value,
-                                phone: document.getElementById('cust-phone').value,
-                                address: document.getElementById('cust-address').value
-                            },
-                            items: [...cart],
-                            total: cart.reduce((s, i) => s + (i.price * i.qty), 0)
-                        });
-                        saveData();
+            document.getElementById('order-form').onsubmit = (e) => {
+                e.preventDefault();
+                const newOrder = {
+                    id: 'ORD-' + Math.floor(Math.random() * 9000 + 1000),
+                    customer: {
+                        name: document.getElementById('cust-name').value,
+                        phone: document.getElementById('cust-phone').value,
+                        address: document.getElementById('cust-address').value
+                    },
+                    items: [...cart],
+                    total: cart.reduce((s, i) => s + (i.price * i.qty), 0),
+                    date: new Date().toLocaleString('ar-EG')
+                };
+
+                db.ref('orders').push(newOrder, (error) => {
+                    if (error) {
+                        alert("حدث خطأ أثناء إرسال الطلب، تأكد من الاتصال بالإنترنت.");
+                    } else {
                         cart = [];
                         updateCartUI();
                         document.getElementById('checkout-modal').classList.remove('show');
-                        alert("تم إرسال الطلب بنجاح!");
-                    };
-
-                    // لوحة التحكم
-                    document.getElementById('admin-btn').onclick = () => document.getElementById('admin-login-modal').classList.add('show');
-                    document.getElementById('close-admin-login-btn').onclick = () => document.getElementById('admin-login-modal').classList.remove('show');
-                    document.getElementById('close-admin-dashboard-btn').onclick = () => document.getElementById('admin-dashboard').classList.remove('show');
-
-                    document.getElementById('verify-admin-btn').onclick = () => {
-                        if (document.getElementById('admin-pass').value === '1234') {
-                            document.getElementById('admin-login-modal').classList.remove('show');
-                            document.getElementById('admin-dashboard').classList.add('show');
-                            renderAdminTable();
-                            renderAdminOrders();
-                        } else alert("كلمة المرور غير صحيحة!");
-                    };
-
-                    // إضافة صنف
-                    document.getElementById('add-product-form').onsubmit = (e) => {
-                        e.preventDefault();
-                        const fileInput = document.getElementById('p-image');
-                        const file = fileInput.files[0];
-
-                        const createProd = (imgUrl) => {
-                            products.push({
-                                id: 'p_' + Date.now(),
-                                category: document.getElementById('p-category').value,
-                                name: document.getElementById('p-name').value,
-                                type: document.getElementById('p-type').value,
-                                price: parseFloat(document.getElementById('p-price').value),
-                                image: imgUrl
-                            });
-                            saveData();
-                            renderProducts();
-                            renderAdminTable();
-                            document.getElementById('add-product-form').reset();
-                            alert("تمت إضافة الصنف بنجاح!");
-                        };
-
-                        if (file) {
-                            const reader = new FileReader();
-                            reader.onload = (evt) => createProd(evt.target.result);
-                            reader.readAsDataURL(file);
-                        } else {
-                            createProd(DEFAULT_IMG);
-                        }
-                    };
+                        alert("تم إرسال طلبك بنجاح وسيظهر لدى الإدارة فوراً!");
+                    }
                 });
+            };
+
+            document.getElementById('admin-btn').onclick = () => document.getElementById('admin-login-modal').classList.add('show');
+            document.getElementById('close-admin-login-btn').onclick = () => document.getElementById('admin-login-modal').classList.remove('show');
+            document.getElementById('close-admin-dashboard-btn').onclick = () => document.getElementById('admin-dashboard').classList.remove('show');
+
+            document.getElementById('verify-admin-btn').onclick = () => {
+                if (document.getElementById('admin-pass').value === '1234') {
+                    document.getElementById('admin-login-modal').classList.remove('show');
+                    document.getElementById('admin-dashboard').classList.add('show');
+                    renderAdminTable();
+                    renderAdminOrders();
+                } else alert("كلمة المرور غير صحيحة!");
+            };
+
+            document.getElementById('add-product-form').onsubmit = (e) => {
+                e.preventDefault();
+                const fileInput = document.getElementById('p-image');
+                const file = fileInput.files[0];
+
+                const createProd = (imgUrl) => {
+                    products.push({
+                        id: 'p_' + Date.now(),
+                        category: document.getElementById('p-category').value,
+                        name: document.getElementById('p-name').value,
+                        type: document.getElementById('p-type').value,
+                        price: parseFloat(document.getElementById('p-price').value),
+                        image: imgUrl
+                    });
+                    saveDataToCloud();
+                    renderProducts();
+                    renderAdminTable();
+                    document.getElementById('add-product-form').reset();
+                    alert("تمت إضافة الصنف وحفظه سحابياً بنجاح!");
+                };
+
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (evt) => createProd(evt.target.result);
+                    reader.readAsDataURL(file);
+                } else {
+                    createProd(DEFAULT_IMG);
+                }
+            };
+        });
     </script>
 </body>
 </html>
